@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/q001"
+    android:orientation="vertical"
+    tools:context="com.example.huoda.left_ship.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#00000000"
+        android:gravity="center_horizontal"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:visibility="visible">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="公园植物管理系统"
+            tools:gravity="center_horizontal"
+            tools:layout_gravity="center_horizontal"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/cut"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/change_help"
+            layout="@layout/help"
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_con"
+            layout="@layout/content_main"
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_share"
+            layout="@layout/share"
+
+            android:visibility="visible"/>
+
+        <include
+            android:id="@+id/change_wel"
+            layout="@layout/wel"
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_edit"
+            layout="@layout/edit"
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_del"
+            layout="@layout/del"
+
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_send"
+            layout="@layout/send"
+
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_add"
+            layout="@layout/add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/change_look"
+            layout="@layout/look"
+
+            android:visibility="gone"/>
+    </LinearLayout>
+
+
+</LinearLayout>
