@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void show(View view) {
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 1000; i++) {
             TextView tv = new TextView(this);
             tv.setText("我是文本：" + i);
             tv.setTextColor(Color.RED);
