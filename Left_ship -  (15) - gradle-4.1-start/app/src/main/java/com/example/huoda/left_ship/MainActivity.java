@@ -59,17 +59,17 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add;
-private ListView lv,lv_name;
-public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help;
-public View bo_yes,bo_to,bo_tom;
-public View change_add1,content;
-private TextView mTextMessage;
-private static final int REQUEST_EXTERNAL_STORAGE = 1;
-private static String[] PERMISSIONS_STORAGE = {
+    private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add;
+    private ListView lv,lv_name;
+    public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help;
+    public View bo_yes,bo_to,bo_tom;
+    public View change_add1,content;
+    private TextView mTextMessage;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE" };
-public Handler nHandler;
+    public Handler nHandler;
 
     protected static String  users="user1",ip="10.63.101.201",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
@@ -98,7 +98,7 @@ public Handler nHandler;
 
 
         lv = (ListView) findViewById(R.id.lv);
-       // lv_name = (ListView) findViewById(R.id.lv_name);
+        // lv_name = (ListView) findViewById(R.id.lv_name);
         change_add.setVisibility(View.GONE);
         change_con.setVisibility(View.GONE);
         change_wel.setVisibility(View.GONE);
@@ -117,11 +117,11 @@ public Handler nHandler;
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         tv_date_to.setText(sf.format(c.getTime()));
-      //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
+        //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
         c.add(Calendar.DAY_OF_MONTH, 1);
-     //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
+        //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
         tv_date_tom.setText(sf.format(c.getTime()));
-      //  tv_date_tom_add.setText(sf.format(c.getTime()));
+        //  tv_date_tom_add.setText(sf.format(c.getTime()));
         c.add(Calendar.DAY_OF_MONTH, -2);
         tv_date_yes.setText(sf.format(c.getTime()));
 
@@ -138,9 +138,9 @@ public Handler nHandler;
         fab_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
-             //   startActivity(new Intent(MainActivity.this, DateActivity.class));
+                //   startActivity(new Intent(MainActivity.this, DateActivity.class));
                 Intent intent =new Intent(MainActivity.this,DateActivity.class);
 
                 //用Bundle携带数据
@@ -327,7 +327,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select id from tips where users1 = '"+users+"' and date2 = "+sf.format(c.getTime());
+                    String sql = "select id from tips where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
@@ -359,7 +359,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select tips from tips where users1 = '"+users+"' and date2 = "+sf.format(c.getTime());
+                    String sql = "select tips from tips where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -388,7 +388,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select notes from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select notes from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -416,7 +416,7 @@ public Handler nHandler;
                     Connection cn = DriverManager.getConnection(url, user, pwd);
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c2 = Calendar.getInstance();
-                    String sql = "select id from tips where users1 = '"+users+"' and date2 = "+sf.format(c2.getTime());
+                    String sql = "select id from tips where user = '"+users+"' and date = "+sf.format(c2.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
@@ -447,8 +447,8 @@ public Handler nHandler;
                     Connection cn = DriverManager.getConnection(url, user, pwd);
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
-                   // c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select tips from tips where users1 = '"+users+"' and date2 = "+sf.format(c.getTime());
+                    // c.add(Calendar.DAY_OF_MONTH, -1);
+                    String sql = "select tips from tips where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -477,7 +477,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     //c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select notes from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select notes from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -506,7 +506,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select id from tips where users1 = '"+users+"' and date2 = "+sf.format(c.getTime());
+                    String sql = "select id from tips where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
@@ -538,7 +538,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select tips from tips where users1 = '"+users+"' and date2 = "+sf.format(c.getTime());
+                    String sql = "select tips from tips where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -567,7 +567,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select notes from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select notes from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
@@ -596,7 +596,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, -1);
-                    String sql = "select id from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select id from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
 
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
@@ -626,7 +626,7 @@ public Handler nHandler;
                     Connection cn = DriverManager.getConnection(url, user, pwd);
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c2 = Calendar.getInstance();
-                    String sql = "select id from notes where users2 = '"+users+"' and date3 = "+sf.format(c2.getTime());
+                    String sql = "select id from notes where user = '"+users+"' and date = "+sf.format(c2.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
@@ -656,7 +656,7 @@ public Handler nHandler;
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select id from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select id from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
@@ -813,8 +813,8 @@ public Handler nHandler;
 
             final ConstraintLayout cut2=(ConstraintLayout)findViewById(R.id.cut2);
             final ImageView im_logo2=(ImageView)findViewById(R.id.im_logo2);
-         //   final TextView tv = (TextView) findViewById(R.id.tv_logo);
-          //  tv.setBackgroundColor(Color.GREEN);
+            //   final TextView tv = (TextView) findViewById(R.id.tv_logo);
+            //  tv.setBackgroundColor(Color.GREEN);
             // tv.setDrawingCacheEnabled(true);
 
 
@@ -840,15 +840,15 @@ public Handler nHandler;
                 public void onClick(View v) {
 
 
-            Intent share_intent = new Intent();
-            share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-            share_intent.setType("text/plain");//设置分享内容的类型
-            share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
-            share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
-            share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
-           MainActivity.this.startActivity(share_intent);
+                    Intent share_intent = new Intent();
+                    share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                    share_intent.setType("text/plain");//设置分享内容的类型
+                    share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
+                    share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
+                    share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
+                    MainActivity.this.startActivity(share_intent);
 
-                   // WeiXinShareUtil.sharePhotoToWX(MainActivity.this,"不想说话，你们开心就好",android.os.Environment.MEDIA_MOUNTED);
+                    // WeiXinShareUtil.sharePhotoToWX(MainActivity.this,"不想说话，你们开心就好",android.os.Environment.MEDIA_MOUNTED);
 
                 }
             });
@@ -883,11 +883,11 @@ public Handler nHandler;
            MainActivity.this.startActivity(share_intent);*/
 
 
-           // String imageUri = insertImageToSystem(MainActivity.this, Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
-           // WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好",Uri.parse(imageUri);
-         //  WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好","/DCIM/camera");
+            // String imageUri = insertImageToSystem(MainActivity.this, Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
+            // WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好",Uri.parse(imageUri);
+            //  WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好","/DCIM/camera");
 
-          //  startActivity(new Intent(MainActivity.this, StartActivity.class));
+            //  startActivity(new Intent(MainActivity.this, StartActivity.class));
         } else if (id == R.id.nav_send) {
             change_add.setVisibility(View.GONE);
             change_con.setVisibility(View.GONE);
@@ -958,10 +958,10 @@ public Handler nHandler;
             TextView tv;
             if (convertView == null) {
                 tv = new TextView(MainActivity.this);
-              //  System.out.println("创建新的view:" + position);
+                //  System.out.println("创建新的view:" + position);
             } else {
                 tv = (TextView) convertView;
-              //  System.out.println("使用回收的view:" + position);
+                //  System.out.println("使用回收的view:" + position);
             }
             tv.setText("我是文本：" + position);
             tv.setTextColor(Color.RED);
@@ -998,8 +998,8 @@ public Handler nHandler;
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                   // mTextMessage.setText(R.string.title_home);
-                   // Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_SHORT).show();
+                    // mTextMessage.setText(R.string.title_home);
+                    // Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_SHORT).show();
                     bo_yes.setVisibility(View.VISIBLE);
                     bo_to.setVisibility(View.GONE);
                     bo_tom.setVisibility(View.GONE);
@@ -1019,7 +1019,7 @@ public Handler nHandler;
                     getTodayId2();
                     return true;
                 case R.id.navigation_notifications:
-                  //  mTextMessage.setText(R.string.title_notifications);
+                    //  mTextMessage.setText(R.string.title_notifications);
                     bo_yes.setVisibility(View.GONE);
                     bo_to.setVisibility(View.GONE);
                     bo_tom.setVisibility(View.VISIBLE);
@@ -1038,7 +1038,7 @@ public Handler nHandler;
             Log.i("xing", "savePicture: ------------------图片为空------");
             return;
         }
-       // File foder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
+        // File foder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
         //DCIM/camera
         File foder = new File("/DCIM/camera");
         if (!foder.exists()) {
@@ -1216,8 +1216,8 @@ public Handler nHandler;
                     String sql1 = "insert into student (S_name)values('"+et1+et2+et3+et4+"')";
                     Statement st1 = (Statement) cn.createStatement();
                     int Res1 = st1.executeUpdate(sql1);
-                    System.out.println(Res1 > 0 ? "插入数据成功" : "插入数据失败");
-                   // Toast.makeText(MainActivity.this, "霍达提示您上报成功", Toast.LENGTH_SHORT).show();
+                    //System.out.println(Res1 > 0 ? "插入数据成功" : "插入数据失败");
+                    // Toast.makeText(MainActivity.this, "霍达提示您上报成功", Toast.LENGTH_SHORT).show();
                     onSuccess2(21,1);
                     cn.close();
                     st1.close();
