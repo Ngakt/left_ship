@@ -83,11 +83,11 @@ public class DateActivity extends AppCompatActivity {
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                   // String sql = "insert into student (S_name)values('"+pre+"')";
-                    String sql ="insert into notes (date3,users2,notes) values("+sf.format(c.getTime())+",'"+users+"','"+pre+"')";
+                    // String sql = "insert into student (S_name)values('"+pre+"')";
+                    String sql ="insert into notes (date,user,notes) values("+sf.format(c.getTime())+",'"+users+"','"+pre+"')";
                     Statement st = (Statement) cn.createStatement();
                     int Res = st.executeUpdate(sql);
-                   // Toast.makeText(DateActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(DateActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
                     System.out.println(Res > 0 ? "插入数据成功" : "插入数据失败");
                     if (Res>0) {
                         onSuccess2(20, 1);
@@ -126,7 +126,7 @@ public class DateActivity extends AppCompatActivity {
                     Bundle bundle20 = msg.getData();
                     int data20 = bundle20.getInt("json");
                     if (data20==1)
-                    Toast.makeText(DateActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DateActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(DateActivity.this, "霍达提示您添加失败", Toast.LENGTH_SHORT).show();
                     break;
@@ -155,7 +155,7 @@ public class DateActivity extends AppCompatActivity {
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select id from notes where users2 = '"+users+"' and date3 = "+sf.format(c.getTime());
+                    String sql = "select id from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
