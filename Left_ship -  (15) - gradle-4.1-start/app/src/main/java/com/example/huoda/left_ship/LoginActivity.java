@@ -140,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user1.equals(pwd1)) {
            // startActivity(new Intent(LoginActivity.this, MainActivity.class));
             startActivity(intent);
+            finish();
         } else {
             Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
         }
