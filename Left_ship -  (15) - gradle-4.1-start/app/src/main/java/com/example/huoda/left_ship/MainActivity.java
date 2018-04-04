@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add;
     private ListView lv,lv_name;
-    public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help;
+    public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
     public View bo_yes,bo_to,bo_tom;
     public View change_add1,content;
     private TextView mTextMessage;
@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         change_send = findViewById(R.id.change_send);
         change_share = findViewById(R.id.change_share);
         change_help = findViewById(R.id.change_help);
+        change_date_day = findViewById(R.id.change_date_day);
         bo_yes = findViewById(R.id.bo_yes);
         bo_to = findViewById(R.id.bo_to);
         bo_tom = findViewById(R.id.bo_tom);
@@ -119,8 +120,9 @@ public class MainActivity extends AppCompatActivity
         change_edit.setVisibility(View.GONE);
         change_look.setVisibility(View.GONE);
         change_send.setVisibility(View.GONE);
-        change_share.setVisibility(View.VISIBLE);
+        change_share.setVisibility(View.GONE);
         change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.GONE);
         bo_yes.setVisibility(View.GONE);
         bo_to.setVisibility(View.VISIBLE);
         bo_tom.setVisibility(View.GONE);
@@ -142,7 +144,6 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_dashboard);
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -180,17 +181,19 @@ public class MainActivity extends AppCompatActivity
         appBarLayout = findViewById(R.id.app_bar_layout);
         compactCalendarView = findViewById(R.id.compactcalendar_view);
         compactCalendarView.setLocale(TimeZone.getDefault(), /*Locale.getDefault()*/Locale.ENGLISH);
-
         compactCalendarView.setShouldDrawDaysHeader(true);
-
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 setSubtitle(dateFormat.format(dateClicked));
                 final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
-                System.out.println(dateFormat_f.format(dateClicked));
+                String day0=dateFormat_f.format(dateClicked);
+               System.out.println(day0);
+                getdayId(day0);
+                getdayId2(day0);
+                getdayList(day0);
+                getdayPre(day0);
             }
-
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 setSubtitle(dateFormat.format(firstDayOfNewMonth));
@@ -204,9 +207,28 @@ public class MainActivity extends AppCompatActivity
         datePickerButton.setOnClickListener(v -> {
             float rotation = isExpanded ? 0 : 180;
             ViewCompat.animate(arrow).rotation(rotation).start();
-
             isExpanded = !isExpanded;
-            System.out.println(isExpanded);
+            if (isExpanded) {
+               // change_date_day.setVisibility(View.VISIBLE);
+                SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c2 = Calendar.getInstance();
+                tv_date_to.setText(sf2.format(c2.getTime()));
+                getTodayList();
+                getTodayPre();
+                getTodayId();
+                getTodayId2();
+            } else{
+                SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c2 = Calendar.getInstance();
+                tv_date_to.setText(sf2.format(c2.getTime()));
+                getTodayList();
+                getTodayPre();
+                getTodayId();
+                getTodayId2();
+
+                //change_date_day.setVisibility(View.GONE);
+
+            }
             appBarLayout.setExpanded(isExpanded, true);
         });
     }
@@ -597,6 +619,124 @@ public class MainActivity extends AppCompatActivity
                     {
                         int mybook = rs.getInt("id");
                         onSuccess2(12, mybook);
+                    }
+                    cn.close();
+                    st.close();
+                    rs.close();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private void getdayId(String date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "jdbc:mysql://" + ip + "/" + db;
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                   // SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                   // Calendar c2 = Calendar.getInstance();
+                    String sql = "select id from tips where user = '"+users+"' and date = "+date ;
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while(rs.next())
+                    {
+                        int mybook = rs.getInt("id");
+                        onSuccess2(3, mybook);
+                    }
+                    cn.close();
+                    st.close();
+                    rs.close();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    onSuccess2(20, 0);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    onSuccess2(20, 0);
+                }
+            }
+        }).start();
+    }
+    private void getdayId2(String date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "jdbc:mysql://" + ip + "/" + db;
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                    Calendar c2 = Calendar.getInstance();
+                    String sql = "select id from notes where user = '"+users+"' and date = "+date;
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while(rs.next())
+                    {
+                        int mybook = rs.getInt("id");
+                        onSuccess2(11, mybook);
+                    }
+                    cn.close();
+                    st.close();
+                    rs.close();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private void getdayList(String date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "jdbc:mysql://" + ip + "/" + db;
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                    Calendar c = Calendar.getInstance();
+                    // c.add(Calendar.DAY_OF_MONTH, -1);
+                    String sql = "select tips from tips where user = '"+users+"' and date = "+date;
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while(rs.next()) {
+                        String mybook = rs.getString("tips");
+                        onSuccess(4, mybook);
+                    }
+                    cn.close();
+                    st.close();
+                    rs.close();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private void getdayPre(String date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "jdbc:mysql://" + ip + "/" + db;
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                    Calendar c = Calendar.getInstance();
+                    //c.add(Calendar.DAY_OF_MONTH, -1);
+                    String sql = "select notes from notes where user = '"+users+"' and date = "+date;
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    while(rs.next()) {
+                        String mybook = rs.getString("notes");
+                        onSuccess(5, mybook);
                     }
                     cn.close();
                     st.close();
@@ -1177,7 +1317,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle0 = msg.getData();
                     int data0 = bundle0.getInt("json");
-
                     tv_yes_id.setText(data0+"");
                     break;
                 case 1:
@@ -1185,7 +1324,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle1 = msg.getData();
                     String data1 = bundle1.getString("json");
-
                     tv_yes_list.setText(data1);
                     break;
                 case 2:
@@ -1193,15 +1331,14 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle2 = msg.getData();
                     String data2 = bundle2.getString("json");
-
                     tv_yes_pre.setText(data2);
                     break;
                 case 3:
-                    TextView tv_today_id = (TextView)findViewById(R.id.tv_today_id);
+                    TextView tv_today_id = (TextView)findViewById(R.id.tv_day_id);
+                    System.out.println("shoudao");
                     //完成主界面更新,拿到数据
                     Bundle bundle3 = msg.getData();
                     int data3 = bundle3.getInt("json");
-
                     tv_today_id.setText(data3+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
                     break;
                 case 4:
@@ -1209,7 +1346,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle4 = msg.getData();
                     String data4 = bundle4.getString("json");
-
                     tv_today_list.setText(data4);
                     break;
                 case 5:
@@ -1217,7 +1353,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle5 = msg.getData();
                     String data5 = bundle5.getString("json");
-
                     tv_today_pre.setText(data5);
                     break;
                 case 6:
@@ -1225,7 +1360,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle6 = msg.getData();
                     int data6 = bundle6.getInt("json");
-
                     tv_tom_id.setText(data6+"");
                     break;
                 case 7:
@@ -1233,7 +1367,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle7 = msg.getData();
                     String data7 = bundle7.getString("json");
-
                     tv_tom_list.setText(data7);
                     break;
                 case 8:
@@ -1241,7 +1374,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle8 = msg.getData();
                     String data8 = bundle8.getString("json");
-
                     tv_tom_pre.setText(data8);
                     break;
                 case 9:
@@ -1257,7 +1389,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle10 = msg.getData();
                     int data10 = bundle10.getInt("json");
-
                     tv_yes_id2.setText(data10+"");
                     break;
                 case 11:
@@ -1265,7 +1396,6 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle11 = msg.getData();
                     int data11 = bundle11.getInt("json");
-
                     tv_today_id2.setText(data11+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
                     break;
                 case 12:
@@ -1273,8 +1403,35 @@ public class MainActivity extends AppCompatActivity
                     //完成主界面更新,拿到数据
                     Bundle bundle12 = msg.getData();
                     int data12 = bundle12.getInt("json");
-
                     tv_tom_id2.setText(data12+"");
+                    break;
+                case 13:
+                    TextView tv_day_id = (TextView)findViewById(R.id.tv_day_id);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle13 = msg.getData();
+                    int data13 = bundle13.getInt("json");
+                    tv_day_id.setText(data13+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
+                    break;
+                case 14:
+                    TextView tv_day_list = (TextView)findViewById(R.id.tv_day_list);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle14 = msg.getData();
+                    String data14 = bundle14.getString("json");
+                    tv_day_list.setText(data14);
+                    break;
+                case 15:
+                    TextView tv_day_pre = (TextView)findViewById(R.id.tv_day_pre);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle15 = msg.getData();
+                    String data15 = bundle15.getString("json");
+                    tv_day_pre.setText(data15);
+                    break;
+                case 16:
+                    TextView tv_day_id2 = (TextView)findViewById(R.id.tv_day_id2);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle16 = msg.getData();
+                    int data16 = bundle16.getInt("json");
+                    tv_day_id2.setText(data16+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
                     break;
                 case 20:
                     Bundle bundle20 = msg.getData();
