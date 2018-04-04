@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     private CompactCalendarView compactCalendarView;
     private boolean isExpanded = false;
 
-    private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add;
+    private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add,tv_date_day;
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
     public View bo_yes,bo_to,bo_tom;
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity
         tv_date_tom = findViewById(R.id.tv_date_tom);
         tv_date_to = findViewById(R.id.tv_date_to);
         tv_date_yes = findViewById(R.id.tv_date_yes);
+        tv_date_day = findViewById(R.id.tv_date_day);
 
 
         lv = (ListView) findViewById(R.id.lv);
@@ -188,7 +189,19 @@ public class MainActivity extends AppCompatActivity
                 setSubtitle(dateFormat.format(dateClicked));
                 final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
                 String day0=dateFormat_f.format(dateClicked);
-               System.out.println(day0);
+                tv_date_day.setText(day0);
+               //refresh
+                TextView tv_day_id =(TextView)findViewById(R.id.tv_day_id);
+                TextView tv_day_id2 =(TextView)findViewById(R.id.tv_day_id2);
+                TextView tv_day_list =(TextView)findViewById(R.id.tv_day_list);
+                TextView tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
+
+                tv_day_id.setText("id");
+                tv_day_id2.setText("id");
+                tv_day_list.setText("系统提示");
+                tv_day_pre.setText("待办事项");
+
+                //get
                 getdayId(day0);
                 getdayId2(day0);
                 getdayList(day0);
@@ -208,26 +221,47 @@ public class MainActivity extends AppCompatActivity
             float rotation = isExpanded ? 0 : 180;
             ViewCompat.animate(arrow).rotation(rotation).start();
             isExpanded = !isExpanded;
+            SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c3 = Calendar.getInstance();
             if (isExpanded) {
-               // change_date_day.setVisibility(View.VISIBLE);
+
                 SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
                 Calendar c2 = Calendar.getInstance();
-                tv_date_to.setText(sf2.format(c2.getTime()));
-                getTodayList();
-                getTodayPre();
-                getTodayId();
-                getTodayId2();
+                tv_date_day.setText(sf2.format(c2.getTime()));
+
+                change_add.setVisibility(View.GONE);
+                change_con.setVisibility(View.GONE);
+                change_wel.setVisibility(View.GONE);
+                change_del.setVisibility(View.GONE);
+                change_edit.setVisibility(View.GONE);
+                change_look.setVisibility(View.GONE);
+                change_send.setVisibility(View.GONE);
+                change_share.setVisibility(View.GONE);
+                change_help.setVisibility(View.GONE);
+                change_date_day.setVisibility(View.VISIBLE);
+
+                getdayId(sf3.format(c3.getTime()));
+                getdayId2(sf3.format(c3.getTime()));
+                getdayList(sf3.format(c3.getTime()));
+                getdayPre(sf3.format(c3.getTime()));
+
             } else{
-                SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar c2 = Calendar.getInstance();
-                tv_date_to.setText(sf2.format(c2.getTime()));
-                getTodayList();
-                getTodayPre();
-                getTodayId();
-                getTodayId2();
 
-                //change_date_day.setVisibility(View.GONE);
+                change_add.setVisibility(View.GONE);
+                change_con.setVisibility(View.GONE);
+                change_wel.setVisibility(View.GONE);
+                change_del.setVisibility(View.VISIBLE);
+                change_edit.setVisibility(View.GONE);
+                change_look.setVisibility(View.GONE);
+                change_send.setVisibility(View.GONE);
+                change_share.setVisibility(View.GONE);
+                change_help.setVisibility(View.GONE);
+                change_date_day.setVisibility(View.GONE);
 
+                getdayId(sf3.format(c3.getTime()));
+                getdayId2(sf3.format(c3.getTime()));
+                getdayList(sf3.format(c3.getTime()));
+                getdayPre(sf3.format(c3.getTime()));
             }
             appBarLayout.setExpanded(isExpanded, true);
         });
@@ -647,7 +681,11 @@ public class MainActivity extends AppCompatActivity
                     while(rs.next())
                     {
                         int mybook = rs.getInt("id");
-                        onSuccess2(3, mybook);
+                        String x=mybook+"";
+                        if (x!=null)
+                        onSuccess2(13, mybook);
+                        else
+                            onSuccess2(13, 0X00);
                     }
                     cn.close();
                     st.close();
@@ -678,7 +716,7 @@ public class MainActivity extends AppCompatActivity
                     while(rs.next())
                     {
                         int mybook = rs.getInt("id");
-                        onSuccess2(11, mybook);
+                        onSuccess2(16, mybook);
                     }
                     cn.close();
                     st.close();
@@ -707,7 +745,7 @@ public class MainActivity extends AppCompatActivity
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
                         String mybook = rs.getString("tips");
-                        onSuccess(4, mybook);
+                        onSuccess(14, mybook);
                     }
                     cn.close();
                     st.close();
@@ -736,7 +774,7 @@ public class MainActivity extends AppCompatActivity
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next()) {
                         String mybook = rs.getString("notes");
-                        onSuccess(5, mybook);
+                        onSuccess(15, mybook);
                     }
                     cn.close();
                     st.close();

@@ -11,7 +11,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00000000"
+        android:background="#20F0fff0"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:expanded="false"
