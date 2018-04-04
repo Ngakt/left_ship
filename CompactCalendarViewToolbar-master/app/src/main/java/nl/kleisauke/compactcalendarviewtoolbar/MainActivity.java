@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private AppBarLayout appBarLayout;
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", /*Locale.getDefault()*/Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
 
     private CompactCalendarView compactCalendarView;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setTitle("CompactCalendarViewToolbar");
+        setTitle("40h写出小功能");
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDayClick(Date dateClicked) {
                 setSubtitle(dateFormat.format(dateClicked));
+                final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
+                System.out.println(dateFormat_f.format(dateClicked));
             }
 
             @Override
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ViewCompat.animate(arrow).rotation(rotation).start();
 
             isExpanded = !isExpanded;
+            System.out.println(isExpanded);
             appBarLayout.setExpanded(isExpanded, true);
         });
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -60,8 +61,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="?android:selectableItemBackground"
                     android:clickable="true"
-                    android:orientation="vertical"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:orientation="vertical">
 
                     <View
                         android:id="@+id/centerInParent"

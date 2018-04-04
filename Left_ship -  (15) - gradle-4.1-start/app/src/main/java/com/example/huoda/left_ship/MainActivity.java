@@ -18,11 +18,13 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,11 +39,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -56,9 +60,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private AppBarLayout appBarLayout;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
+    private CompactCalendarView compactCalendarView;
+    private boolean isExpanded = false;
+
     private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add;
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help;
@@ -106,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         change_edit.setVisibility(View.GONE);
         change_look.setVisibility(View.GONE);
         change_send.setVisibility(View.GONE);
-        change_share.setVisibility(View.GONE);
+        change_share.setVisibility(View.VISIBLE);
         change_help.setVisibility(View.GONE);
         bo_yes.setVisibility(View.GONE);
         bo_to.setVisibility(View.VISIBLE);
@@ -133,16 +146,13 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("公园植物管理系统");
 
         FloatingActionButton fab_date = (FloatingActionButton) findViewById(R.id.fab_date);
         fab_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-                //   startActivity(new Intent(MainActivity.this, DateActivity.class));
                 Intent intent =new Intent(MainActivity.this,DateActivity.class);
-
                 //用Bundle携带数据
                 Bundle bundle=new Bundle();
                 //传递name参数为tinyphp
@@ -152,7 +162,6 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString("user", user);
                 bundle.putString("pwd", pwd);
                 intent.putExtras(bundle);
-
                 startActivity(intent);
             }
         });
@@ -166,138 +175,63 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-    Handler mHandler = new Handler() {
 
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    TextView tv_yes_id = (TextView)findViewById(R.id.tv_yes_id);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle0 = msg.getData();
-                    int data0 = bundle0.getInt("json");
 
-                    tv_yes_id.setText(data0+"");
-                    break;
-                case 1:
-                    TextView tv_yes_list = (TextView)findViewById(R.id.tv_yes_list);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle1 = msg.getData();
-                    String data1 = bundle1.getString("json");
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        compactCalendarView = findViewById(R.id.compactcalendar_view);
+        compactCalendarView.setLocale(TimeZone.getDefault(), /*Locale.getDefault()*/Locale.ENGLISH);
 
-                    tv_yes_list.setText(data1);
-                    break;
-                case 2:
-                    TextView tv_yes_pre = (TextView)findViewById(R.id.tv_yes_pre);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle2 = msg.getData();
-                    String data2 = bundle2.getString("json");
+        compactCalendarView.setShouldDrawDaysHeader(true);
 
-                    tv_yes_pre.setText(data2);
-                    break;
-                case 3:
-                    TextView tv_today_id = (TextView)findViewById(R.id.tv_today_id);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle3 = msg.getData();
-                    int data3 = bundle3.getInt("json");
-
-                    tv_today_id.setText(data3+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
-                    break;
-                case 4:
-                    TextView tv_today_list = (TextView)findViewById(R.id.tv_today_list);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle4 = msg.getData();
-                    String data4 = bundle4.getString("json");
-
-                    tv_today_list.setText(data4);
-                    break;
-                case 5:
-                    TextView tv_today_pre = (TextView)findViewById(R.id.tv_today_pre);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle5 = msg.getData();
-                    String data5 = bundle5.getString("json");
-
-                    tv_today_pre.setText(data5);
-                    break;
-                case 6:
-                    TextView tv_tom_id = (TextView)findViewById(R.id.tv_tom_id);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle6 = msg.getData();
-                    int data6 = bundle6.getInt("json");
-
-                    tv_tom_id.setText(data6+"");
-                    break;
-                case 7:
-                    TextView tv_tom_list = (TextView)findViewById(R.id.tv_tom_list);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle7 = msg.getData();
-                    String data7 = bundle7.getString("json");
-
-                    tv_tom_list.setText(data7);
-                    break;
-                case 8:
-                    TextView tv_tom_pre = (TextView)findViewById(R.id.tv_tom_pre);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle8 = msg.getData();
-                    String data8 = bundle8.getString("json");
-
-                    tv_tom_pre.setText(data8);
-                    break;
-                case 9:
-                    TextView tv_date_add_id = (TextView)findViewById(R.id.tv_date_add_id);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle9 = msg.getData();
-                    int data9 = bundle9.getInt("json");
-                    System.out.println(data9);
-                    tv_date_add_id.setText(data9+"");
-                    break;
-                case 10:
-                    TextView tv_yes_id2 = (TextView)findViewById(R.id.tv_yes_id2);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle10 = msg.getData();
-                    int data10 = bundle10.getInt("json");
-
-                    tv_yes_id2.setText(data10+"");
-                    break;
-                case 11:
-                    TextView tv_today_id2 = (TextView)findViewById(R.id.tv_today_id2);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle11 = msg.getData();
-                    int data11 = bundle11.getInt("json");
-
-                    tv_today_id2.setText(data11+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
-                    break;
-                case 12:
-                    TextView tv_tom_id2 = (TextView)findViewById(R.id.tv_tom_id2);
-                    //完成主界面更新,拿到数据
-                    Bundle bundle12 = msg.getData();
-                    int data12 = bundle12.getInt("json");
-
-                    tv_tom_id2.setText(data12+"");
-                    break;
-                case 20:
-                    Bundle bundle20 = msg.getData();
-                    int data20 = bundle20.getInt("json");
-                    if (data20==1)
-                        Toast.makeText(MainActivity.this, "霍达提示您连接成功", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainActivity.this, "霍达提示您连接失败", Toast.LENGTH_SHORT).show();
-                    break;
-                case 21:
-                    Bundle bundle21 = msg.getData();
-                    int data21 = bundle21.getInt("json");
-                    if (data21==1)
-                        Toast.makeText(MainActivity.this, "霍达提示您上报成功", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainActivity.this, "霍达提示您上报失败", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
+        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                setSubtitle(dateFormat.format(dateClicked));
+                final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
+                System.out.println(dateFormat_f.format(dateClicked));
             }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+                setSubtitle(dateFormat.format(firstDayOfNewMonth));
+            }
+        });
+        setCurrentDate(new Date());
+        final ImageView arrow = findViewById(R.id.date_picker_arrow);
+
+        RelativeLayout datePickerButton = findViewById(R.id.date_picker_button);
+
+        datePickerButton.setOnClickListener(v -> {
+            float rotation = isExpanded ? 0 : 180;
+            ViewCompat.animate(arrow).rotation(rotation).start();
+
+            isExpanded = !isExpanded;
+            System.out.println(isExpanded);
+            appBarLayout.setExpanded(isExpanded, true);
+        });
+    }
+    private void setCurrentDate(Date date) {
+        setSubtitle(dateFormat.format(date));
+        if (compactCalendarView != null) {
+            compactCalendarView.setCurrentDate(date);
         }
-    };
+    }
+    @Override
+    public void setTitle(CharSequence title) {
+        TextView tvTitle = findViewById(R.id.title);
+
+        if (tvTitle != null) {
+            tvTitle.setText(title);
+        }
+    }
+
+    private void setSubtitle(String subtitle) {
+        TextView datePickerTextView = findViewById(R.id.date_picker_text_view);
+
+        if (datePickerTextView != null) {
+            datePickerTextView.setText(subtitle);
+        }
+    }
     public void onSuccess(int i, String json) {
         Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
@@ -1232,4 +1166,135 @@ public class MainActivity extends AppCompatActivity
             }
         }).start();
     }
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    TextView tv_yes_id = (TextView)findViewById(R.id.tv_yes_id);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle0 = msg.getData();
+                    int data0 = bundle0.getInt("json");
+
+                    tv_yes_id.setText(data0+"");
+                    break;
+                case 1:
+                    TextView tv_yes_list = (TextView)findViewById(R.id.tv_yes_list);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle1 = msg.getData();
+                    String data1 = bundle1.getString("json");
+
+                    tv_yes_list.setText(data1);
+                    break;
+                case 2:
+                    TextView tv_yes_pre = (TextView)findViewById(R.id.tv_yes_pre);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle2 = msg.getData();
+                    String data2 = bundle2.getString("json");
+
+                    tv_yes_pre.setText(data2);
+                    break;
+                case 3:
+                    TextView tv_today_id = (TextView)findViewById(R.id.tv_today_id);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle3 = msg.getData();
+                    int data3 = bundle3.getInt("json");
+
+                    tv_today_id.setText(data3+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
+                    break;
+                case 4:
+                    TextView tv_today_list = (TextView)findViewById(R.id.tv_today_list);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle4 = msg.getData();
+                    String data4 = bundle4.getString("json");
+
+                    tv_today_list.setText(data4);
+                    break;
+                case 5:
+                    TextView tv_today_pre = (TextView)findViewById(R.id.tv_today_pre);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle5 = msg.getData();
+                    String data5 = bundle5.getString("json");
+
+                    tv_today_pre.setText(data5);
+                    break;
+                case 6:
+                    TextView tv_tom_id = (TextView)findViewById(R.id.tv_tom_id);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle6 = msg.getData();
+                    int data6 = bundle6.getInt("json");
+
+                    tv_tom_id.setText(data6+"");
+                    break;
+                case 7:
+                    TextView tv_tom_list = (TextView)findViewById(R.id.tv_tom_list);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle7 = msg.getData();
+                    String data7 = bundle7.getString("json");
+
+                    tv_tom_list.setText(data7);
+                    break;
+                case 8:
+                    TextView tv_tom_pre = (TextView)findViewById(R.id.tv_tom_pre);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle8 = msg.getData();
+                    String data8 = bundle8.getString("json");
+
+                    tv_tom_pre.setText(data8);
+                    break;
+                case 9:
+                    TextView tv_date_add_id = (TextView)findViewById(R.id.tv_date_add_id);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle9 = msg.getData();
+                    int data9 = bundle9.getInt("json");
+                    System.out.println(data9);
+                    tv_date_add_id.setText(data9+"");
+                    break;
+                case 10:
+                    TextView tv_yes_id2 = (TextView)findViewById(R.id.tv_yes_id2);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle10 = msg.getData();
+                    int data10 = bundle10.getInt("json");
+
+                    tv_yes_id2.setText(data10+"");
+                    break;
+                case 11:
+                    TextView tv_today_id2 = (TextView)findViewById(R.id.tv_today_id2);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle11 = msg.getData();
+                    int data11 = bundle11.getInt("json");
+
+                    tv_today_id2.setText(data11+"");//setText参数如果是int类型，一定要在最后加上 +""，否则报错
+                    break;
+                case 12:
+                    TextView tv_tom_id2 = (TextView)findViewById(R.id.tv_tom_id2);
+                    //完成主界面更新,拿到数据
+                    Bundle bundle12 = msg.getData();
+                    int data12 = bundle12.getInt("json");
+
+                    tv_tom_id2.setText(data12+"");
+                    break;
+                case 20:
+                    Bundle bundle20 = msg.getData();
+                    int data20 = bundle20.getInt("json");
+                    if (data20==1)
+                        Toast.makeText(MainActivity.this, "霍达提示您连接成功", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MainActivity.this, "霍达提示您连接失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case 21:
+                    Bundle bundle21 = msg.getData();
+                    int data21 = bundle21.getInt("json");
+                    if (data21==1)
+                        Toast.makeText(MainActivity.this, "霍达提示您上报成功", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MainActivity.this, "霍达提示您上报失败", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
