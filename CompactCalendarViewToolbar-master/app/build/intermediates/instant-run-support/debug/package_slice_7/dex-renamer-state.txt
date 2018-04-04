@@ -1,0 +1,4 @@
+#Wed Apr 04 19:05:11 CST 2018
+base.0=C\:\\WorkSpace\\left_ship\\CompactCalendarViewToolbar-master\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\7
+path.0=classes.dex
+renamed.0=classes.dex
