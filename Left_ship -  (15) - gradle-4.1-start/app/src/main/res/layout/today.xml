@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_today_id"
+            android:id="@+id/tv_day_id"
             android:layout_width="84dp"
             android:layout_height="40dp"
             android:layout_marginStart="136dp"
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:text="id"
             android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@+id/tv_today_id"
+            app:layout_constraintStart_toEndOf="@+id/tv_day_id"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
