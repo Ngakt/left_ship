@@ -21,7 +21,7 @@ public class Connect extends AppCompatActivity {
 
     private Button bt_connect;
     public EditText et_ip,et_db,et_user,et_pwd,et_ip2;
-    public int ip_net=0;
+    public int ip_net=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
