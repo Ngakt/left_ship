@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             "android.permission.WRITE_EXTERNAL_STORAGE" };
     public Handler nHandler;
 
-    protected static String  users="user1",ip="10.63.101.201",db0,db="librarydb",db2,user="test",pwd="";
+    protected static String  users="user1",ip="pcohd.uicp.cn:24967",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
     private BottomNavigationBar bottomNavigationBar;
     private ShapeBadgeItem badgeItem;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         fdv();vis();
 
         SmartImageView siv = (SmartImageView) findViewById(R.id.smart_v);
-        siv.setImageUrl("http://10.63.101.201:8080/WebServer/image/share.png", R.drawable.ic_menu_camera);
+        siv.setImageUrl("http://20vv455999.iask.in:22467/WebServer/image/share.png", R.drawable.ic_menu_camera);
         verifyStoragePermissions(MainActivity.this);
 
 

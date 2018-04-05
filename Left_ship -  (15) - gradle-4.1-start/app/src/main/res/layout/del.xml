@@ -64,8 +64,7 @@
         app:fab_size="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        android:layout_marginRight="40dp"/>
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

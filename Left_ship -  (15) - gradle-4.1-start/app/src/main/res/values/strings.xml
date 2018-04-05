@@ -35,5 +35,6 @@
     <string name="list_none">系统提示</string>
     <string name="pre_none">待办事项</string>
     <string name="ip">10.63.101.201</string>
+    <string name="ip2">pcohd.uicp.cn:24967</string>
 
 </resources>

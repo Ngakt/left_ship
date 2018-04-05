@@ -21,7 +21,8 @@ import java.sql.Statement;
 public class Connect extends AppCompatActivity {
 
     private Button bt_connect;
-    public EditText et_ip,et_db,et_user,et_pwd;
+    public EditText et_ip,et_db,et_user,et_pwd,et_ip2;
+    public int ip_net=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +33,12 @@ public class Connect extends AppCompatActivity {
 
         bt_connect=(Button) findViewById(R.id.bt_connect);
         et_ip=(EditText) findViewById(R.id.et_ip);
+        et_ip2=(EditText) findViewById(R.id.et_ip2);
         et_db=(EditText) findViewById(R.id.et_db);
         et_user=(EditText) findViewById(R.id.et_user);
         et_pwd=(EditText) findViewById(R.id.et_pwd);
+        fab_f();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "注意保护数据安全", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
-        });
     }
     Handler mHandler = new Handler() {
 
@@ -72,48 +67,122 @@ public class Connect extends AppCompatActivity {
         message.setData(bundle);
         mHandler.sendMessage(message);
     }
+    public void note(View view ){
+        Snackbar.make(view, "霍达提示您默认选择的是外网连接", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Action", null).show();
+    }
 
     public void bt_set(View view){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Intent intent = new Intent(Connect.this,MainActivity.class);
-                    String c_ip = et_ip.getText().toString().trim();
-                    String c_db = et_db.getText().toString().trim();
-                    String c_user = et_user.getText().toString().trim();
-                    String c_pwd = et_pwd.getText().toString().trim();
+        if(ip_net==0) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Intent intent = new Intent(Connect.this, MainActivity.class);
 
-                    MainActivity.ip=c_ip;
-                    MainActivity.db=c_db;
-                    MainActivity.user=c_user;
-                    MainActivity.pwd=c_pwd;
+                        String c_ip = et_ip.getText().toString().trim();
+                        String c_db = et_db.getText().toString().trim();
+                        String c_user = et_user.getText().toString().trim();
+                        String c_pwd = et_pwd.getText().toString().trim();
+
+                        MainActivity.ip = c_ip;
+                        MainActivity.db = c_db;
+                        MainActivity.user = c_user;
+                        MainActivity.pwd = c_pwd;
 
 
-                    String url = "jdbc:mysql://"+c_ip+"/"+c_db;
-                    System.out.println(url);
-                    Class.forName("com.mysql.jdbc.Driver");
-                    Connection cn= DriverManager.getConnection(url,c_user,c_pwd);
-                    Statement st=(Statement)cn.createStatement();
-                  // Toast.makeText(Connect.this, "霍达提示您成功连接数据库!", Toast.LENGTH_SHORT).show();
-                    onSuccess2(20, 1);
-                    cn.close();
-                    st.close();
-                    startActivity(intent);
+                        String url = "jdbc:mysql://" + c_ip + "/" + c_db;
+                        System.out.println(url);
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection cn = DriverManager.getConnection(url, c_user, c_pwd);
+                        Statement st = (Statement) cn.createStatement();
+                        // Toast.makeText(Connect.this, "霍达提示您成功连接数据库!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 1);
+                        cn.close();
+                        st.close();
+                        startActivity(intent);
 
-                } catch (ClassNotFoundException e) {
-                   // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
-                    onSuccess2(20, 0);
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                   // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
-                    onSuccess2(20, 0);
-                    e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 0);
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 0);
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }).start();
-       // Toast.makeText(this, "connected", Toast.LENGTH_SHORT).show();
+            }).start();
+            // Toast.makeText(this, "connected", Toast.LENGTH_SHORT).show();
+        }
+        else if(ip_net==1)
+        {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Intent intent = new Intent(Connect.this, MainActivity.class);
 
+                        String c_ip = et_ip2.getText().toString().trim();
+                        String c_db = et_db.getText().toString().trim();
+                        String c_user = et_user.getText().toString().trim();
+                        String c_pwd = et_pwd.getText().toString().trim();
+
+                        MainActivity.ip = c_ip;
+                        MainActivity.db = c_db;
+                        MainActivity.user = c_user;
+                        MainActivity.pwd = c_pwd;
+
+
+                        String url = "jdbc:mysql://" + c_ip + "/" + c_db;
+                        System.out.println(url);
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection cn = DriverManager.getConnection(url, c_user, c_pwd);
+                        Statement st = (Statement) cn.createStatement();
+                        // Toast.makeText(Connect.this, "霍达提示您成功连接数据库!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 1);
+                        cn.close();
+                        st.close();
+                        startActivity(intent);
+
+                    } catch (ClassNotFoundException e) {
+                        // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 0);
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        // Toast.makeText(Connect.this, "霍达提示您连接数据库失败!", Toast.LENGTH_SHORT).show();
+                        onSuccess2(20, 0);
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            // Toast.makeText(this, "connected", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void fab_f(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "默认为内网IP，外网IP为pcohd.uicp.cn:24967", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+    public void Net1(View view){
+        ip_net=0;
+        Snackbar.make(view, "您选择的是局域网连接", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Action", null).show();
+        //Toast.makeText(this,"您选择的是内网连接", Toast.LENGTH_SHORT).show();
+        // 10.63.101.201
+    }
+    public void Net2(View view){
+        ip_net=1;
+        Snackbar.make(view, "您选择的是外网连接", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Action", null).show();
+       // Toast.makeText(this,"您选择的是外网连接", Toast.LENGTH_SHORT).show();
+      //  Editable text = et_ip.getText("pcohd.uicp.cn:24967");
+       // pcohd.uicp.cn:24967
     }
 
 }
