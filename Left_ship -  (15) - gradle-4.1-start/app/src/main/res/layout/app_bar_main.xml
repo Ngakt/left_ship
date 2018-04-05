@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LAYOUT1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.huoda.left_ship.MainActivity">
@@ -113,15 +113,15 @@
         layout="@layout/date_day"
         android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_help"
-                    layout="@layout/help"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_help"
+        layout="@layout/help"
+        android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_con"
-                    layout="@layout/content_main"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_con"
+        layout="@layout/content_main"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/change_del"
@@ -138,24 +138,24 @@
         layout="@layout/wel"
         android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_edit"
-                    layout="@layout/edit"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_edit"
+        layout="@layout/edit"
+        android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_send"
-                    layout="@layout/send"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_send"
+        layout="@layout/send"
+        android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_add"
-                    layout="@layout/add"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_add"
+        layout="@layout/add"
+        android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_look"
-                    layout="@layout/look"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_look"
+        layout="@layout/look"
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

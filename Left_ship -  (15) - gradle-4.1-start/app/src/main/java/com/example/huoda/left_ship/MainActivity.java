@@ -92,11 +92,25 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationBar bottomNavigationBar;
     private ShapeBadgeItem badgeItem;
     public int state_1=1;
+
+
+    private float mPosX, mPosY, mCurPosX, mCurPosY;
+    private static final int FLING_MIN_DISTANCE = 20;// 移动最小距离
+    private static final int FLING_MIN_VELOCITY = 200;// 移动最大速度
+
+    float x1 = 0;
+    float x2 = 0;
+    float y1 = 0;
+    float y2 = 0;
+
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+       // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
+
         fdv();
         //vis();
         Handler handler = new Handler();
@@ -107,9 +121,9 @@ public class MainActivity extends AppCompatActivity
             }
         }, 50);
         onSuccess(105,"");
-
         onSuccess(100,"");
         onSuccess(102,"");
+
 
         verifyStoragePermissions(MainActivity.this);
 
@@ -187,13 +201,13 @@ public class MainActivity extends AppCompatActivity
                     public void run() {
                         onSuccess(111,"");
                     }
-                }, 100);
+                }, 30);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         onSuccess(104,"");
                     }
-                }, 120);
+                }, 40);
             } else{
                // NotExpended(sf3,c3);
                 onSuccess(103,"");
@@ -201,6 +215,7 @@ public class MainActivity extends AppCompatActivity
             appBarLayout.setExpanded(isExpanded, true);
         });
     }
+
     public void fdv(){
         change_add = findViewById(R.id.change_add);
         change_con = findViewById(R.id.change_con);
@@ -878,7 +893,11 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_help) {
-            startActivity(new Intent(MainActivity.this, Connect.class));
+            startActivity(new Intent(MainActivity.this, StartActivity.class));
+            return true;
+        }
+        if (id == R.id.action_add) {
+            startActivity(new Intent(MainActivity.this, AddNoteActivity.class));
             return true;
         }
 
@@ -1459,11 +1478,18 @@ public class MainActivity extends AppCompatActivity
                 case 118:
                     break;
                 case 105:
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            vis();
+                        }
+                    }, 50);
                    // vis();
                     change_add.setVisibility(View.GONE);
                     change_con.setVisibility(View.GONE);
                     change_wel.setVisibility(View.GONE);
-                    change_del.setVisibility(View.VISIBLE);
+                    change_del.setVisibility(View.GONE);
                     change_edit.setVisibility(View.GONE);
                     change_look.setVisibility(View.GONE);
                     change_send.setVisibility(View.GONE);
@@ -1471,8 +1497,9 @@ public class MainActivity extends AppCompatActivity
                     change_help.setVisibility(View.GONE);
                     change_date_day.setVisibility(View.GONE);
                     bo_yes.setVisibility(View.GONE);
-                    bo_to.setVisibility(View.VISIBLE);
+                    bo_to.setVisibility(View.GONE);
                     bo_tom.setVisibility(View.GONE);
+
                     break;
                 case 104:
                     ifExpanded();
