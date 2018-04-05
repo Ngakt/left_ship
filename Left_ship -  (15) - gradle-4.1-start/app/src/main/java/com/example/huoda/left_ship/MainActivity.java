@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
        // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
 
         fdv();
-        //vis();
+        vis();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -120,6 +120,12 @@ public class MainActivity extends AppCompatActivity
                 onSuccess(111,"");
             }
         }, 50);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vis();
+            }
+        }, 100);
         onSuccess(105,"");
         onSuccess(100,"");
         onSuccess(102,"");
@@ -215,7 +221,19 @@ public class MainActivity extends AppCompatActivity
             appBarLayout.setExpanded(isExpanded, true);
         });
     }
-
+    public void onClick_Add_Note() {
+        Intent intent =new Intent(MainActivity.this,AddNoteActivity.class);
+        //用Bundle携带数据
+        Bundle bundle=new Bundle();
+        //传递name参数为tinyphp
+        bundle.putString("users", users);
+        bundle.putString("ip", ip);
+        bundle.putString("db", db);
+        bundle.putString("user", user);
+        bundle.putString("pwd", pwd);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
     public void fdv(){
         change_add = findViewById(R.id.change_add);
         change_con = findViewById(R.id.change_con);
@@ -897,7 +915,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.action_add) {
-            startActivity(new Intent(MainActivity.this, AddNoteActivity.class));
+            onClick_Add_Note();
             return true;
         }
 
@@ -935,7 +953,20 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
             //  change_del
-           onSuccess(111,"");
+            onSuccess(105,"");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(111,"");
+                }
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(105,"");
+                }
+            }, 60);
+
 
         } else if (id == R.id.nav_manage) {
             //  change_look

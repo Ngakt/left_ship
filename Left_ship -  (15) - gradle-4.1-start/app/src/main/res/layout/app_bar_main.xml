@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LAYOUT1"
@@ -111,7 +112,7 @@
     <include
         android:id="@+id/change_date_day"
         layout="@layout/date_day"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <include
         android:id="@+id/change_help"
@@ -131,7 +132,7 @@
     <include
         android:id="@+id/change_share"
         layout="@layout/share"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <include
         android:id="@+id/change_wel"

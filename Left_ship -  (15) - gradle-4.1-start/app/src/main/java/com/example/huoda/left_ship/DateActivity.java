@@ -3,13 +3,20 @@ package com.example.huoda.left_ship;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,10 +25,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateActivity extends AppCompatActivity {
     public View date_add,date_del;
-
+    private AppBarLayout appBarLayout;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
+    private CompactCalendarView compactCalendarView;
+    private boolean isExpanded = false;
+public String users,ip,db,user,pwd;
+    public String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +44,64 @@ public class DateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_date);
         date_add = findViewById(R.id.date_add);
 
-
-
-        TextView tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        Calendar c = Calendar.getInstance();
+        date= (sf.format(c.getTime()));
 
         Bundle bundle = this.getIntent().getExtras();
         //接收name值
-        final String users = bundle.getString("users");
-        final String ip = bundle.getString("ip");
-        final String db = bundle.getString("db");
-        final String user = bundle.getString("user");
-        final String pwd = bundle.getString("pwd");
-        addTomId(ip, db, user, pwd,users);
+         String users = bundle.getString("users");
+         String ip = bundle.getString("ip");
+         String db = bundle.getString("db");
+         String user = bundle.getString("user");
+         String pwd = bundle.getString("pwd");
+        addTomId(ip, db, user, pwd,users,date);
 
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        tv_date_tom_add.setText(sf.format(c.getTime()));
+        Handler handler = new Handler();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+        setTitle("公园植物管理系统");
+        appBarLayout = findViewById(R.id.app_bar_layout);
+        compactCalendarView = findViewById(R.id.compactcalendar_view);
+        compactCalendarView.setLocale(TimeZone.getDefault(), /*Locale.getDefault()*/Locale.ENGLISH);
+        compactCalendarView.setShouldDrawDaysHeader(true);
+        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                setSubtitle(dateFormat.format(dateClicked));
+                final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
+                String day0=dateFormat_f.format(dateClicked);
+                date=day0;
+
+                final SimpleDateFormat dateFormat_f2 = new SimpleDateFormat("yyyy-MM-dd", /*Locale.getDefault()*/Locale.ENGLISH);
+                String day2=dateFormat_f2.format(dateClicked);
+                onSuccess(1,day2);
+                addTomId(ip, db, user, pwd,users,date);
+                final ImageView arrow = findViewById(R.id.date_picker_arrow);
+                float rotation = isExpanded ? 0 : 180;
+                ViewCompat.animate(arrow).rotation(rotation).start();
+                isExpanded = !isExpanded;
+                appBarLayout.setExpanded(isExpanded, true);
+            }
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+                setSubtitle(dateFormat.format(firstDayOfNewMonth));
+            }
+        });
+        setCurrentDate(new Date());
+        final ImageView arrow = findViewById(R.id.date_picker_arrow);
+
+        RelativeLayout datePickerButton = findViewById(R.id.date_picker_button);
+
+        datePickerButton.setOnClickListener(v -> {
+            float rotation = isExpanded ? 0 : 180;
+            ViewCompat.animate(arrow).rotation(rotation).start();
+            isExpanded = !isExpanded;
+            appBarLayout.setExpanded(isExpanded, true);
+        });
+
+        TextView tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
+        onSuccess(0,"");
 
         Button bt_add_pre = (Button) findViewById(R.id.bt_add_pre);
         bt_add_pre.setOnClickListener(new View.OnClickListener() {
@@ -54,12 +110,12 @@ public class DateActivity extends AppCompatActivity {
                 EditText et_tom_add_pre = (EditText)findViewById(R.id.et_tom_add_pre);
                 String pre = et_tom_add_pre.getText().toString().trim();
                 System.out.println(pre);
-                submitTomPre(ip, db, user, pwd,pre,users);
+                submitTomPre(ip, db, user, pwd,pre,users,date);
 
             }
         });
 
-        FloatingActionButton fab_back = (FloatingActionButton) findViewById(R.id.fab_back);
+        FloatingActionButton fab_back = (FloatingActionButton) findViewById(R.id.fab_back2);
         fab_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +127,7 @@ public class DateActivity extends AppCompatActivity {
         fab_back.setVisibility(View.VISIBLE);
     }
 
-    private void submitTomPre(final String ip, final String db, final String user, final String pwd, final String pre,final String users){
+    private void submitTomPre(final String ip, final String db, final String user, final String pwd, final String pre,final String users,final String date){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,11 +136,8 @@ public class DateActivity extends AppCompatActivity {
                     String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
-                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                    Calendar c = Calendar.getInstance();
-                    c.add(Calendar.DAY_OF_MONTH, 1);
                     // String sql = "insert into student (S_name)values('"+pre+"')";
-                    String sql ="insert into notes (date,user,notes) values("+sf.format(c.getTime())+",'"+users+"','"+pre+"')";
+                    String sql ="insert into notes (date,user,notes) values("+date+",'"+users+"','"+pre+"')";
                     Statement st = (Statement) cn.createStatement();
                     int Res = st.executeUpdate(sql);
                     // Toast.makeText(DateActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
@@ -105,7 +158,46 @@ public class DateActivity extends AppCompatActivity {
             }
         }).start();
     }
+    private void addTomId(final String ip, final String db, final String user, final String pwd,final String users,final String date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "jdbc:mysql://" + ip + "/" + db;
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                    // String sql = "select id from notes where user = '"+users+"' and date = "+date;
+                    String sql = "select id from notes where user = '"+users+"'";
 
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                   /* String sql = "select max(id) from notes ";
+                    System.out.println(sql);
+                    Statement st = (Statement) cn.createStatement();
+                    ResultSet rs = st.executeQuery(sql);
+                    rs.next();
+                    int mybook = rs.getInt("id");
+                    onSuccess2(9, mybook);*/
+                    while(rs.next())
+                    {
+                        int mybook = rs.getInt("id");
+                        String x=mybook+"";
+                        if (x!=null)
+                            onSuccess2(9, mybook);
+                        else
+                            onSuccess2(9, 0X00);
+                    }
+                    cn.close();
+                    st.close();
+                    rs.close();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     Handler mHandler = new Handler() {
 
@@ -113,6 +205,23 @@ public class DateActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 0:
+                    TextView tv_date_tom_add=findViewById(R.id.tv_date_tom_add);
+                    Bundle bundle0 = msg.getData();
+                    String data0 = bundle0.getString("json");
+                    tv_date_tom_add.setText(data0);
+
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+                    Calendar c = Calendar.getInstance();
+                  //  c.add(Calendar.DAY_OF_MONTH, 1);
+                    tv_date_tom_add.setText(sf.format(c.getTime()));
+                    break;
+                case 1:
+                     tv_date_tom_add=findViewById(R.id.tv_date_tom_add);
+                    Bundle bundle1 = msg.getData();
+                    String data1 = bundle1.getString("json");
+                    tv_date_tom_add.setText(data1);
+                    break;
                 case 9:
                     TextView tv_date_add_id = (TextView)findViewById(R.id.tv_date_add_id);
                     //完成主界面更新,拿到数据
@@ -135,7 +244,50 @@ public class DateActivity extends AppCompatActivity {
             }
         }
     };
+    private void setCurrentDate(Date date) {
+        setSubtitle(dateFormat.format(date));
+        if (compactCalendarView != null) {
+            compactCalendarView.setCurrentDate(date);
+        }
+    }
+    @Override
+    public void setTitle(CharSequence title) {
+        TextView tvTitle = findViewById(R.id.title);
 
+        if (tvTitle != null) {
+            tvTitle.setText(title);
+        }
+    }
+
+    private void setSubtitle(String subtitle) {
+        TextView datePickerTextView = findViewById(R.id.date_picker_text_view);
+
+        if (datePickerTextView != null) {
+            datePickerTextView.setText(subtitle);
+        }
+    }
+    public void onSuccess(int i, String json) {
+        // Log.i("Channel", "onSuccess");
+        Message message = Message.obtain();
+        message.what = i;
+        Bundle bundle = new Bundle();
+        bundle.putString("json", json);
+        message.setData(bundle);
+        mHandler.sendMessage(message);
+    }
+    public void onSuccess5(int i, String json1,String json2,String json3,String json4,String json5) {
+        // Log.i("Channel", "onSuccess");
+        Message message = Message.obtain();
+        message.what = i;
+        Bundle bundle = new Bundle();
+        bundle.putString("json1", json1);
+        bundle.putString("json2", json2);
+        bundle.putString("json3", json3);
+        bundle.putString("json4", json4);
+        bundle.putString("json5", json5);
+        message.setData(bundle);
+        mHandler.sendMessage(message);
+    }
     public void onSuccess2(int i, int json) {
         Message message = Message.obtain();
         message.what = i;
@@ -144,36 +296,7 @@ public class DateActivity extends AppCompatActivity {
         message.setData(bundle);
         mHandler.sendMessage(message);
     }
-    private void addTomId(final String ip, final String db, final String user, final String pwd,final String users) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String url = "jdbc:mysql://" + ip + "/" + db;
-                    Class.forName("com.mysql.jdbc.Driver");
-                    Connection cn = DriverManager.getConnection(url, user, pwd);
-                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                    Calendar c = Calendar.getInstance();
-                    c.add(Calendar.DAY_OF_MONTH, 1);
-                    String sql = "select id from notes where user = '"+users+"' and date = "+sf.format(c.getTime());
-                    Statement st = (Statement) cn.createStatement();
-                    ResultSet rs = st.executeQuery(sql);
-                    while(rs.next())
-                    {
-                        int mybook = rs.getInt("id");
-                        onSuccess2(9, mybook);
-                    }
-                    cn.close();
-                    st.close();
-                    rs.close();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
+
 
     public void add_date(View view){
         date_add.setVisibility(View.VISIBLE);
