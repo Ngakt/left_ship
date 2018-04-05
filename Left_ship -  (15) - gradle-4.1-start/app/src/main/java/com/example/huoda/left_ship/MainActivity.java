@@ -1361,7 +1361,7 @@ public class MainActivity extends AppCompatActivity
         canvas.drawBitmap(target, 0, 0, p);
 
         // 在中间位置开始添加水印
-        canvas.drawText(str, w-w / 9, h / 9, p);
+        canvas.drawText(str, w-8*w / 9, h / 9, p);
 
         canvas.save(Canvas.ALL_SAVE_FLAG);
         canvas.restore();
