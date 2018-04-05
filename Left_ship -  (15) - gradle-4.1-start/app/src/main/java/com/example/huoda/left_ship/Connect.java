@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +21,7 @@ public class Connect extends AppCompatActivity {
 
     private Button bt_connect;
     public EditText et_ip,et_db,et_user,et_pwd,et_ip2;
-    public int ip_net=1;
+    public int ip_net=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class Connect extends AppCompatActivity {
         et_db=(EditText) findViewById(R.id.et_db);
         et_user=(EditText) findViewById(R.id.et_user);
         et_pwd=(EditText) findViewById(R.id.et_pwd);
-        fab_f();
+
 
     }
     Handler mHandler = new Handler() {
@@ -158,17 +157,9 @@ public class Connect extends AppCompatActivity {
             }).start();
             // Toast.makeText(this, "connected", Toast.LENGTH_SHORT).show();
         }
+        finish();
     }
-    public void fab_f(){
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "默认为内网IP，外网IP为pcohd.uicp.cn:24967", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
+
     public void Net1(View view){
         ip_net=0;
         Snackbar.make(view, "您选择的是局域网连接", Snackbar.LENGTH_INDEFINITE)

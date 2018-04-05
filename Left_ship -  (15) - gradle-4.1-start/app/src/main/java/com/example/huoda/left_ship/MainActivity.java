@@ -91,30 +91,19 @@ public class MainActivity extends AppCompatActivity
     public int count;
     private BottomNavigationBar bottomNavigationBar;
     private ShapeBadgeItem badgeItem;
-    public int state_1;
+    public int state_1=1;
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fdv();
+        vis();
 
-        fdv();vis();
+        onSuccess(100,"");
+        onSuccess(102,"");
 
-        SmartImageView siv = (SmartImageView) findViewById(R.id.smart_v);
-        siv.setImageUrl("http://20vv455999.iask.in:22467/WebServer/image/share.png", R.drawable.ic_menu_camera);
         verifyStoragePermissions(MainActivity.this);
-
-
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
-        tv_date_to.setText(sf.format(c.getTime()));
-        //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
-        tv_date_tom.setText(sf.format(c.getTime()));
-        //  tv_date_tom_add.setText(sf.format(c.getTime()));
-        c.add(Calendar.DAY_OF_MONTH, -2);
-        tv_date_yes.setText(sf.format(c.getTime()));
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -164,17 +153,7 @@ public class MainActivity extends AppCompatActivity
                 setSubtitle(dateFormat.format(dateClicked));
                 final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
                 String day0=dateFormat_f.format(dateClicked);
-                tv_date_day.setText(day0);
-               //refresh
-                tv_day_id.setText("id");
-                tv_day_id2.setText("id");
-                tv_day_list.setText("系统提示");
-                tv_day_pre.setText("待办事项");
-                //get
-                getdayId(day0);
-                getdayId2(day0);
-                getdayList(day0);
-                getdayPre(day0);
+                onSuccess(101,day0);
             }
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
@@ -195,7 +174,8 @@ public class MainActivity extends AppCompatActivity
             if (isExpanded) {
                 ifExpanded(sf3,c3);
             } else{
-                NotExpended(sf3,c3);
+               // NotExpended(sf3,c3);
+                onSuccess(103,"");
             }
             appBarLayout.setExpanded(isExpanded, true);
         });
@@ -226,7 +206,6 @@ public class MainActivity extends AppCompatActivity
     }
     public void vis(){
         lv = (ListView) findViewById(R.id.lv);
-        // lv_name = (ListView) findViewById(R.id.lv_name);
         change_add.setVisibility(View.GONE);
         change_con.setVisibility(View.GONE);
         change_wel.setVisibility(View.GONE);
@@ -242,8 +221,6 @@ public class MainActivity extends AppCompatActivity
         bo_tom.setVisibility(View.GONE);
     }
     public void ifExpanded(SimpleDateFormat sf3,Calendar c3){
-        SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c2 = Calendar.getInstance();
         tv_date_day.setText(sf3.format(c3.getTime()));
         SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
         Calendar c4 = Calendar.getInstance();
@@ -284,7 +261,7 @@ public class MainActivity extends AppCompatActivity
             getdayPre(date_to);
 
     }
-    public void NotExpended(SimpleDateFormat sf3,Calendar c3){
+    public void NotExpended(){
         SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
         Calendar c4 = Calendar.getInstance();
         String date_to = sf4.format(c4.getTime());
@@ -873,19 +850,8 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(MainActivity.this, Connect.class));
-
-          /*  change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.VISIBLE);*/
             return true;
         }
         if (id == R.id.action_help) {
@@ -1104,7 +1070,7 @@ public class MainActivity extends AppCompatActivity
     public void connect(View view) {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
-    public void wel(View view){
+   /* public void wel(View view){
         change_add.setVisibility(View.GONE);
         change_con.setVisibility(View.GONE);
         change_wel.setVisibility(View.VISIBLE);
@@ -1114,7 +1080,7 @@ public class MainActivity extends AppCompatActivity
         change_send.setVisibility(View.GONE);
         change_share.setVisibility(View.GONE);
         change_help.setVisibility(View.GONE);
-    }
+    }*/
     private class MyAdapter extends BaseAdapter {
 
         /**
@@ -1422,6 +1388,43 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 103:
+                    NotExpended();
+                    break;
+                case 102:
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+                    Calendar c = Calendar.getInstance();
+                    tv_date_to.setText(sf.format(c.getTime()));
+                    //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
+                    c.add(Calendar.DAY_OF_MONTH, 1);
+                    //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
+                    tv_date_tom.setText(sf.format(c.getTime()));
+                    //  tv_date_tom_add.setText(sf.format(c.getTime()));
+                    c.add(Calendar.DAY_OF_MONTH, -2);
+                    tv_date_yes.setText(sf.format(c.getTime()));
+                    break;
+                case 101:
+                    Bundle bundle101 = msg.getData();
+                    String day0 = bundle101.getString("json");
+                    tv_date_day.setText(day0);
+                    //refresh
+                    tv_day_id.setText("id");
+                    tv_day_id2.setText("id");
+                    tv_day_list.setText("系统提示");
+                    tv_day_pre.setText("待办事项");
+                    //get
+                    getdayId(day0);
+                    getdayId2(day0);
+                    getdayList(day0);
+                    getdayPre(day0);
+                    break ;
+                case 100:
+                    SmartImageView siv = (SmartImageView) findViewById(R.id.smart_v);
+                    siv.setImageUrl("http://20vv455999.iask.in:22467/WebServer/image/share.png", R.drawable.ic_menu_camera);
+                    break;
+                case 99:
+                   // vis();
+                    break;
                 case 0:
                     TextView tv_yes_id = (TextView)findViewById(R.id.tv_yes_id);
                     //完成主界面更新,拿到数据
