@@ -1,5 +1,6 @@
 package com.example.huoda.left_ship;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isExpanded = false;
 
     private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add,tv_date_day;
+    public TextView tv_day_id,tv_day_id2,tv_day_list,tv_day_pre;
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
     public View bo_yes,bo_to,bo_tom;
@@ -88,45 +90,14 @@ public class MainActivity extends AppCompatActivity
     public int count;
     private BottomNavigationBar bottomNavigationBar;
     private ShapeBadgeItem badgeItem;
+    public int state_1;
+    @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        change_add = findViewById(R.id.change_add);
-        change_con = findViewById(R.id.change_con);
-        change_del = findViewById(R.id.change_del);
-        change_wel = findViewById(R.id.change_wel);
-        change_edit = findViewById(R.id.change_edit);
-        change_look = findViewById(R.id.change_look);
-        change_send = findViewById(R.id.change_send);
-        change_share = findViewById(R.id.change_share);
-        change_help = findViewById(R.id.change_help);
-        change_date_day = findViewById(R.id.change_date_day);
-        bo_yes = findViewById(R.id.bo_yes);
-        bo_to = findViewById(R.id.bo_to);
-        bo_tom = findViewById(R.id.bo_tom);
-        tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
-        tv_date_tom = findViewById(R.id.tv_date_tom);
-        tv_date_to = findViewById(R.id.tv_date_to);
-        tv_date_yes = findViewById(R.id.tv_date_yes);
-        tv_date_day = findViewById(R.id.tv_date_day);
 
-
-        lv = (ListView) findViewById(R.id.lv);
-        // lv_name = (ListView) findViewById(R.id.lv_name);
-        change_add.setVisibility(View.GONE);
-        change_con.setVisibility(View.GONE);
-        change_wel.setVisibility(View.GONE);
-        change_del.setVisibility(View.VISIBLE);
-        change_edit.setVisibility(View.GONE);
-        change_look.setVisibility(View.GONE);
-        change_send.setVisibility(View.GONE);
-        change_share.setVisibility(View.GONE);
-        change_help.setVisibility(View.GONE);
-        change_date_day.setVisibility(View.GONE);
-        bo_yes.setVisibility(View.GONE);
-        bo_to.setVisibility(View.VISIBLE);
-        bo_tom.setVisibility(View.GONE);
+        fdv();vis();
 
         verifyStoragePermissions(MainActivity.this);
 
@@ -191,16 +162,10 @@ public class MainActivity extends AppCompatActivity
                 String day0=dateFormat_f.format(dateClicked);
                 tv_date_day.setText(day0);
                //refresh
-                TextView tv_day_id =(TextView)findViewById(R.id.tv_day_id);
-                TextView tv_day_id2 =(TextView)findViewById(R.id.tv_day_id2);
-                TextView tv_day_list =(TextView)findViewById(R.id.tv_day_list);
-                TextView tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
-
                 tv_day_id.setText("id");
                 tv_day_id2.setText("id");
                 tv_day_list.setText("系统提示");
                 tv_day_pre.setText("待办事项");
-
                 //get
                 getdayId(day0);
                 getdayId2(day0);
@@ -224,47 +189,138 @@ public class MainActivity extends AppCompatActivity
             SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd");
             Calendar c3 = Calendar.getInstance();
             if (isExpanded) {
-
-                SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar c2 = Calendar.getInstance();
-                tv_date_day.setText(sf2.format(c2.getTime()));
-
-                change_add.setVisibility(View.GONE);
-                change_con.setVisibility(View.GONE);
-                change_wel.setVisibility(View.GONE);
-                change_del.setVisibility(View.GONE);
-                change_edit.setVisibility(View.GONE);
-                change_look.setVisibility(View.GONE);
-                change_send.setVisibility(View.GONE);
-                change_share.setVisibility(View.GONE);
-                change_help.setVisibility(View.GONE);
-                change_date_day.setVisibility(View.VISIBLE);
-
-                getdayId(sf3.format(c3.getTime()));
-                getdayId2(sf3.format(c3.getTime()));
-                getdayList(sf3.format(c3.getTime()));
-                getdayPre(sf3.format(c3.getTime()));
-
+                ifExpanded(sf3,c3);
             } else{
-
-                change_add.setVisibility(View.GONE);
-                change_con.setVisibility(View.GONE);
-                change_wel.setVisibility(View.GONE);
-                change_del.setVisibility(View.VISIBLE);
-                change_edit.setVisibility(View.GONE);
-                change_look.setVisibility(View.GONE);
-                change_send.setVisibility(View.GONE);
-                change_share.setVisibility(View.GONE);
-                change_help.setVisibility(View.GONE);
-                change_date_day.setVisibility(View.GONE);
-
-                getdayId(sf3.format(c3.getTime()));
-                getdayId2(sf3.format(c3.getTime()));
-                getdayList(sf3.format(c3.getTime()));
-                getdayPre(sf3.format(c3.getTime()));
+                NotExpended(sf3,c3);
             }
             appBarLayout.setExpanded(isExpanded, true);
         });
+    }
+    public void fdv(){
+        change_add = findViewById(R.id.change_add);
+        change_con = findViewById(R.id.change_con);
+        change_del = findViewById(R.id.change_del);
+        change_wel = findViewById(R.id.change_wel);
+        change_edit = findViewById(R.id.change_edit);
+        change_look = findViewById(R.id.change_look);
+        change_send = findViewById(R.id.change_send);
+        change_share = findViewById(R.id.change_share);
+        change_help = findViewById(R.id.change_help);
+        change_date_day = findViewById(R.id.change_date_day);
+        bo_yes = findViewById(R.id.bo_yes);
+        bo_to = findViewById(R.id.bo_to);
+        bo_tom = findViewById(R.id.bo_tom);
+        tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
+        tv_date_tom = findViewById(R.id.tv_date_tom);
+        tv_date_to = findViewById(R.id.tv_date_to);
+        tv_date_yes = findViewById(R.id.tv_date_yes);
+        tv_date_day = findViewById(R.id.tv_date_day);
+        tv_day_id =(TextView)findViewById(R.id.tv_day_id);
+        tv_day_id2 =(TextView)findViewById(R.id.tv_day_id2);
+        tv_day_list =(TextView)findViewById(R.id.tv_day_list);
+        tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
+    }
+    public void vis(){
+        lv = (ListView) findViewById(R.id.lv);
+        // lv_name = (ListView) findViewById(R.id.lv_name);
+        change_add.setVisibility(View.GONE);
+        change_con.setVisibility(View.GONE);
+        change_wel.setVisibility(View.GONE);
+        change_del.setVisibility(View.VISIBLE);
+        change_edit.setVisibility(View.GONE);
+        change_look.setVisibility(View.GONE);
+        change_send.setVisibility(View.GONE);
+        change_share.setVisibility(View.GONE);
+        change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.GONE);
+        bo_yes.setVisibility(View.GONE);
+        bo_to.setVisibility(View.VISIBLE);
+        bo_tom.setVisibility(View.GONE);
+    }
+    public void ifExpanded(SimpleDateFormat sf3,Calendar c3){
+        SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c2 = Calendar.getInstance();
+        tv_date_day.setText(sf3.format(c3.getTime()));
+        SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
+        Calendar c4 = Calendar.getInstance();
+        String date_to = sf4.format(c4.getTime());
+        if(change_add.getVisibility()==(View.VISIBLE))
+        {state_1 = 1;}
+        if(change_con.getVisibility()==(View.VISIBLE))
+        {state_1 = 2;}
+        if(change_wel.getVisibility()==(View.VISIBLE))
+        {state_1 = 3;}
+        if(change_del.getVisibility()==(View.VISIBLE))
+        {state_1 = 4;}
+        if(change_edit.getVisibility()==(View.VISIBLE))
+        {state_1 = 5;}
+        if(change_look.getVisibility()==(View.VISIBLE))
+        {state_1 = 6;}
+        if(change_send.getVisibility()==(View.VISIBLE))
+        {state_1 = 7;}
+        if(change_share.getVisibility()==(View.VISIBLE))
+        {state_1 = 8;}
+        if(change_help.getVisibility()==(View.VISIBLE))
+        {state_1 = 9;}
+
+        change_add.setVisibility(View.GONE);
+        change_con.setVisibility(View.GONE);
+        change_wel.setVisibility(View.GONE);
+        change_del.setVisibility(View.GONE);
+        change_edit.setVisibility(View.GONE);
+        change_look.setVisibility(View.GONE);
+        change_send.setVisibility(View.GONE);
+        change_share.setVisibility(View.GONE);
+        change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.VISIBLE);
+
+            getdayId(date_to);
+            getdayId2(date_to);
+            getdayList(date_to);
+            getdayPre(date_to);
+            System.out.println(date_to);
+
+    }
+    public void NotExpended(SimpleDateFormat sf3,Calendar c3){
+
+        switch (state_1){
+            case 1:
+                change_add.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                change_con.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                change_wel.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                change_del.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                change_edit.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                change_look.setVisibility(View.VISIBLE);
+                break;
+            case 7:
+                change_send.setVisibility(View.VISIBLE);
+                break;
+            case 8:
+                change_share.setVisibility(View.VISIBLE);
+                break;
+            case 9:
+                change_help.setVisibility(View.VISIBLE);
+                break;
+            default:
+                Toast.makeText(this,"错误代码，无法识别", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        change_date_day.setVisibility(View.GONE);
+
+        getdayId(sf3.format(c3.getTime()));
+        getdayId2(sf3.format(c3.getTime()));
+        getdayList(sf3.format(c3.getTime()));
+        getdayPre(sf3.format(c3.getTime()));
     }
     private void setCurrentDate(Date date) {
         setSubtitle(dateFormat.format(date));
