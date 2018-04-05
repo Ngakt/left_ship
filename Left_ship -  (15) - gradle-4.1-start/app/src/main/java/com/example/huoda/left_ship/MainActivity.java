@@ -1013,12 +1013,22 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
 
-
+/*
                     Intent share_intent = new Intent();
                     share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
                     share_intent.setType("text/plain");//设置分享内容的类型
                     share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
                     share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
+                    share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
+                    MainActivity.this.startActivity(share_intent);*/
+
+                    Intent share_intent = new Intent();
+                    share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                   // share_intent.setType("text/plain");//设置分享内容的类型
+                    share_intent.setType("image/*");  //设置分享内容的类型
+                    share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
+                    share_intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("http://20vv455999.iask.in:22467/WebServer/image/share.png"));
+                    //share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
                     share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
                     MainActivity.this.startActivity(share_intent);
 
@@ -1298,7 +1308,7 @@ public class MainActivity extends AppCompatActivity
 
         // 添加水印
         Bitmap bitmap = Bitmap.createBitmap(createWatermarkBitmap(cachebmp,
-                "霍达出品"));
+                "HD"));
 
         FileOutputStream fos;
         try {
