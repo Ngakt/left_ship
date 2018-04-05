@@ -14,14 +14,23 @@
     tools:showIn="@layout/app_bar_main">
 
 
+    <com.example.huoda.left_ship.image.SmartImageView
+        android:id="@+id/smart_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/im_logo2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/tbb"/>
+        app:srcCompat="@drawable/tbb" />
 
     <TextView
         android:layout_width="wrap_content"

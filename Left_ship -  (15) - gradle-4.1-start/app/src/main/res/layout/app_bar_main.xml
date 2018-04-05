@@ -111,7 +111,7 @@
     <include
         android:id="@+id/change_date_day"
         layout="@layout/date_day"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
                 <include
                     android:id="@+id/change_help"
@@ -128,10 +128,10 @@
                     layout="@layout/del"
                     android:visibility="gone" />
 
-                <include
-                    android:id="@+id/change_share"
-                    layout="@layout/share"
-                    android:visibility="gone" />
+    <include
+        android:id="@+id/change_share"
+        layout="@layout/share"
+        android:visibility="visible" />
 
     <include
         android:id="@+id/change_wel"

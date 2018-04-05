@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
+import com.example.huoda.left_ship.image.SmartImageView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.io.BufferedOutputStream;
@@ -99,7 +100,10 @@ public class MainActivity extends AppCompatActivity
 
         fdv();vis();
 
+        SmartImageView siv = (SmartImageView) findViewById(R.id.smart_v);
+        siv.setImageUrl("http://10.63.101.201:8080/WebServer/image/share.png", R.drawable.ic_menu_camera);
         verifyStoragePermissions(MainActivity.this);
+
 
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
@@ -278,10 +282,12 @@ public class MainActivity extends AppCompatActivity
             getdayId2(date_to);
             getdayList(date_to);
             getdayPre(date_to);
-            System.out.println(date_to);
 
     }
     public void NotExpended(SimpleDateFormat sf3,Calendar c3){
+        SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
+        Calendar c4 = Calendar.getInstance();
+        String date_to = sf4.format(c4.getTime());
 
         switch (state_1){
             case 1:
@@ -317,10 +323,10 @@ public class MainActivity extends AppCompatActivity
         }
         change_date_day.setVisibility(View.GONE);
 
-        getdayId(sf3.format(c3.getTime()));
-        getdayId2(sf3.format(c3.getTime()));
-        getdayList(sf3.format(c3.getTime()));
-        getdayPre(sf3.format(c3.getTime()));
+        getdayId(date_to);
+        getdayId2(date_to);
+        getdayList(date_to);
+        getdayPre(date_to);
     }
     private void setCurrentDate(Date date) {
         setSubtitle(dateFormat.format(date));
