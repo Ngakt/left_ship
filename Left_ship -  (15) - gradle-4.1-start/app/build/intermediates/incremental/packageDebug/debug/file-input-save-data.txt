@@ -1,7 +1,0 @@
-#Internal package file, do not edit.
-#Fri Apr 06 01:41:58 CST 2018
-0.baseType=DIRECTORY
-0.base=C\:\\WorkSpace\\left_ship\\Left_ship -  (15) - gradle-4.1-start\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\18
-0.path=classes.dex
-0.set=DEX
-count=1
