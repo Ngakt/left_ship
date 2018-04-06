@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_talk_to1">TalkTo1Activity</string>
+    <string name="title_activity_talk_to2">TalkTo2Activity</string>
+    <string name="title_activity_talk_list">TalkListActivity</string>
+</resources>
