@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
 
         fdv();
         vis();
@@ -110,15 +110,13 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 SetGone();
             }
-        }, 50);
+        }, 9);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 vis();
             }
         }, 100);
-        onSuccess(105,"");
-        onSuccess(100,"");
         onSuccess(102,"");
 
 
@@ -956,6 +954,12 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    onSuccess(61,"");
+                }
+            }, 10);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     SetGone();
                 }
             }, 50);
@@ -965,7 +969,6 @@ public class MainActivity extends AppCompatActivity
                     onSuccess(105,"");
                 }
             }, 60);
-
 
         } else if (id == R.id.nav_manage) {
             //  change_look
@@ -1163,33 +1166,15 @@ public class MainActivity extends AppCompatActivity
                 case R.id.navigation_home:
                     // mTextMessage.setText(R.string.title_home);
                     // Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_SHORT).show();
-                    bo_yes.setVisibility(View.VISIBLE);
-                    bo_to.setVisibility(View.GONE);
-                    bo_tom.setVisibility(View.GONE);
-                    getYesList();
-                    getYesPre();
-                    getYesId();
-                    getYesId2();
+                   onSuccess(60,"");
                     return true;
                 case R.id.navigation_dashboard:
                     //mTextMessage.setText(R.string.title_dashboard);
-                    bo_yes.setVisibility(View.GONE);
-                    bo_to.setVisibility(View.VISIBLE);
-                    bo_tom.setVisibility(View.GONE);
-                    getTodayList();
-                    getTodayPre();
-                    getTodayId();
-                    getTodayId2();
+                    onSuccess(61,"");
                     return true;
                 case R.id.navigation_notifications:
                     //  mTextMessage.setText(R.string.title_notifications);
-                    bo_yes.setVisibility(View.GONE);
-                    bo_to.setVisibility(View.GONE);
-                    bo_tom.setVisibility(View.VISIBLE);
-                    getTomList();
-                    getTomPre();
-                    getTomId();
-                    getTomId2();
+                    onSuccess(62,"");
                     return true;
             }
             return false;
@@ -1367,6 +1352,7 @@ public class MainActivity extends AppCompatActivity
         EditText et_4 = (EditText)findViewById(R.id.et_4);
         String et4 = et_4.getText().toString().trim();
         add(et1,et2,et3,et4);
+        hintKbTwo();
     }
     private void add(final String et1,final String et2,final String et3,final String et4) {
         new Thread(new Runnable() {
@@ -1395,12 +1381,51 @@ public class MainActivity extends AppCompatActivity
             }
         }).start();
     }
+    private void hintKbTwo() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm.isActive()&&getCurrentFocus()!=null){
+            if (getCurrentFocus().getWindowToken()!=null) {
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
+    }
     Handler mHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+
+                case 60://设置昨天的
+                    bo_yes.setVisibility(View.VISIBLE);
+                    bo_to.setVisibility(View.GONE);
+                    bo_tom.setVisibility(View.GONE);
+                    getYesList();
+                    getYesPre();
+                    getYesId();
+                    getYesId2();
+                    break;
+                case 61://设置今天的
+                    bo_yes.setVisibility(View.GONE);
+                    bo_to.setVisibility(View.VISIBLE);
+                    bo_tom.setVisibility(View.GONE);
+                    getTodayList();
+                    getTodayPre();
+                    getTodayId();
+                    getTodayId2();
+                    break;
+                case 62://设置明天的
+                    bo_yes.setVisibility(View.GONE);
+                    bo_to.setVisibility(View.GONE);
+                    bo_tom.setVisibility(View.VISIBLE);
+                    getTomList();
+                    getTomPre();
+                    getTomId();
+                    getTomId2();
+                    break;
+                case 233:
+//                    Toast.makeText(this,"nihao", Toast.LENGTH_SHORT).show();
+                    break;
                 case 110:
                     change_add.setVisibility(View.VISIBLE);
                     change_con.setVisibility(View.GONE);
@@ -1411,6 +1436,7 @@ public class MainActivity extends AppCompatActivity
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.GONE);
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
                     break;
                 case 111:
                     change_add.setVisibility(View.GONE);
@@ -1422,6 +1448,7 @@ public class MainActivity extends AppCompatActivity
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.GONE);
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
                     break;
                 case 112:
                     change_add.setVisibility(View.GONE);
@@ -1433,6 +1460,7 @@ public class MainActivity extends AppCompatActivity
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.GONE);
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
 
                     new Thread(new Runnable() {
                         @Override
@@ -1477,7 +1505,9 @@ public class MainActivity extends AppCompatActivity
                     change_look.setVisibility(View.GONE);
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.VISIBLE);
+                    onSuccess(100,"");
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
                     break;
                 case 114:
                     change_add.setVisibility(View.GONE);
@@ -1489,6 +1519,7 @@ public class MainActivity extends AppCompatActivity
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.GONE);
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
                     break;
                 case 115:
                     change_add.setVisibility(View.GONE);
@@ -1500,6 +1531,7 @@ public class MainActivity extends AppCompatActivity
                     change_send.setVisibility(View.GONE);
                     change_share.setVisibility(View.GONE);
                     change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
                     break;
                 case 116:
                     break;
@@ -1509,26 +1541,26 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case 105:
                     Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            vis();
-                        }
-                    }, 50);
-                    // vis();
-                    change_add.setVisibility(View.GONE);
-                    change_con.setVisibility(View.GONE);
-                    change_wel.setVisibility(View.GONE);
-                    change_del.setVisibility(View.GONE);
-                    change_edit.setVisibility(View.GONE);
-                    change_look.setVisibility(View.GONE);
-                    change_send.setVisibility(View.GONE);
-                    change_share.setVisibility(View.GONE);
-                    change_help.setVisibility(View.GONE);
-                    change_date_day.setVisibility(View.GONE);
-                    bo_yes.setVisibility(View.GONE);
-                    bo_to.setVisibility(View.GONE);
-                    bo_tom.setVisibility(View.GONE);
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            vis();
+//                        }
+//                    }, 50);
+                     vis();
+//                    change_add.setVisibility(View.GONE);
+//                    change_con.setVisibility(View.GONE);
+//                    change_wel.setVisibility(View.GONE);
+//                    change_del.setVisibility(View.GONE);
+//                    change_edit.setVisibility(View.GONE);
+//                    change_look.setVisibility(View.GONE);
+//                    change_send.setVisibility(View.GONE);
+//                    change_share.setVisibility(View.GONE);
+//                    change_help.setVisibility(View.GONE);
+//                    change_date_day.setVisibility(View.GONE);
+//                    bo_yes.setVisibility(View.GONE);
+//                    bo_to.setVisibility(View.GONE);
+//                    bo_tom.setVisibility(View.GONE);
 
                     break;
                 case 104:

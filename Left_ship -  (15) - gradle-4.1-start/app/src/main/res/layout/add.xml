@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:background="#0f000000"
                 android:onClick="addInfo"
-                android:text="上报"/>
+                android:text="上报" />
 
         </TableRow>
 

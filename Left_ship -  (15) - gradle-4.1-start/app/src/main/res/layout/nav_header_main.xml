@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/nav_header_height"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
@@ -24,28 +23,26 @@
         android:clickable="true"
         android:onClick="connect"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_top1"/>
+        app:srcCompat="@mipmap/ic_top1" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:autoText="true"
-        android:onClick="wel"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:singleLine="false"
         android:text="公园植物管理系统"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="#000000"/>
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:onClick="wel"
         android:text="呵护每一株植物"
         android:textColor="#000000"
-        android:textSize="10sp"/>
+        android:textSize="10sp" />
 
 </LinearLayout>
