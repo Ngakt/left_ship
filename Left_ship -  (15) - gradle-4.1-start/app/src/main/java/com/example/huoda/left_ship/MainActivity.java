@@ -1,5 +1,6 @@
 package com.example.huoda.left_ship;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
+import com.example.huoda.left_ship.image.SmartImageView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.io.BufferedOutputStream;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isExpanded = false;
 
     private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add,tv_date_day;
+    public TextView tv_day_id,tv_day_id2,tv_day_list,tv_day_pre;
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
     public View bo_yes,bo_to,bo_tom;
@@ -84,62 +87,51 @@ public class MainActivity extends AppCompatActivity
             "android.permission.WRITE_EXTERNAL_STORAGE" };
     public Handler nHandler;
 
-    protected static String  users="user1",ip="10.63.101.201",db0,db="librarydb",db2,user="test",pwd="";
+    protected static String  users="user1",ip="pcohd.uicp.cn:24967",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
     private BottomNavigationBar bottomNavigationBar;
     private ShapeBadgeItem badgeItem;
+    public int state_1=1;
+
+
+    private float mPosX, mPosY, mCurPosX, mCurPosY;
+    private static final int FLING_MIN_DISTANCE = 20;// 移动最小距离
+    private static final int FLING_MIN_VELOCITY = 200;// 移动最大速度
+
+    float x1 = 0;
+    float x2 = 0;
+    float y1 = 0;
+    float y2 = 0;
+
+    @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        change_add = findViewById(R.id.change_add);
-        change_con = findViewById(R.id.change_con);
-        change_del = findViewById(R.id.change_del);
-        change_wel = findViewById(R.id.change_wel);
-        change_edit = findViewById(R.id.change_edit);
-        change_look = findViewById(R.id.change_look);
-        change_send = findViewById(R.id.change_send);
-        change_share = findViewById(R.id.change_share);
-        change_help = findViewById(R.id.change_help);
-        change_date_day = findViewById(R.id.change_date_day);
-        bo_yes = findViewById(R.id.bo_yes);
-        bo_to = findViewById(R.id.bo_to);
-        bo_tom = findViewById(R.id.bo_tom);
-        tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
-        tv_date_tom = findViewById(R.id.tv_date_tom);
-        tv_date_to = findViewById(R.id.tv_date_to);
-        tv_date_yes = findViewById(R.id.tv_date_yes);
-        tv_date_day = findViewById(R.id.tv_date_day);
 
+       // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
 
-        lv = (ListView) findViewById(R.id.lv);
-        // lv_name = (ListView) findViewById(R.id.lv_name);
-        change_add.setVisibility(View.GONE);
-        change_con.setVisibility(View.GONE);
-        change_wel.setVisibility(View.GONE);
-        change_del.setVisibility(View.VISIBLE);
-        change_edit.setVisibility(View.GONE);
-        change_look.setVisibility(View.GONE);
-        change_send.setVisibility(View.GONE);
-        change_share.setVisibility(View.GONE);
-        change_help.setVisibility(View.GONE);
-        change_date_day.setVisibility(View.GONE);
-        bo_yes.setVisibility(View.GONE);
-        bo_to.setVisibility(View.VISIBLE);
-        bo_tom.setVisibility(View.GONE);
+        fdv();
+        vis();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onSuccess(111,"");
+            }
+        }, 50);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vis();
+            }
+        }, 100);
+        onSuccess(105,"");
+        onSuccess(100,"");
+        onSuccess(102,"");
+
 
         verifyStoragePermissions(MainActivity.this);
-
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
-        tv_date_to.setText(sf.format(c.getTime()));
-        //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
-        tv_date_tom.setText(sf.format(c.getTime()));
-        //  tv_date_tom_add.setText(sf.format(c.getTime()));
-        c.add(Calendar.DAY_OF_MONTH, -2);
-        tv_date_yes.setText(sf.format(c.getTime()));
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -189,23 +181,7 @@ public class MainActivity extends AppCompatActivity
                 setSubtitle(dateFormat.format(dateClicked));
                 final SimpleDateFormat dateFormat_f = new SimpleDateFormat("yyyyMMdd", /*Locale.getDefault()*/Locale.ENGLISH);
                 String day0=dateFormat_f.format(dateClicked);
-                tv_date_day.setText(day0);
-               //refresh
-                TextView tv_day_id =(TextView)findViewById(R.id.tv_day_id);
-                TextView tv_day_id2 =(TextView)findViewById(R.id.tv_day_id2);
-                TextView tv_day_list =(TextView)findViewById(R.id.tv_day_list);
-                TextView tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
-
-                tv_day_id.setText("id");
-                tv_day_id2.setText("id");
-                tv_day_list.setText("系统提示");
-                tv_day_pre.setText("待办事项");
-
-                //get
-                getdayId(day0);
-                getdayId2(day0);
-                getdayList(day0);
-                getdayPre(day0);
+                onSuccess(101,day0);
             }
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
@@ -225,46 +201,165 @@ public class MainActivity extends AppCompatActivity
             Calendar c3 = Calendar.getInstance();
             if (isExpanded) {
 
-                SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar c2 = Calendar.getInstance();
-                tv_date_day.setText(sf2.format(c2.getTime()));
-
-                change_add.setVisibility(View.GONE);
-                change_con.setVisibility(View.GONE);
-                change_wel.setVisibility(View.GONE);
-                change_del.setVisibility(View.GONE);
-                change_edit.setVisibility(View.GONE);
-                change_look.setVisibility(View.GONE);
-                change_send.setVisibility(View.GONE);
-                change_share.setVisibility(View.GONE);
-                change_help.setVisibility(View.GONE);
-                change_date_day.setVisibility(View.VISIBLE);
-
-                getdayId(sf3.format(c3.getTime()));
-                getdayId2(sf3.format(c3.getTime()));
-                getdayList(sf3.format(c3.getTime()));
-                getdayPre(sf3.format(c3.getTime()));
-
+                onSuccess(104,"");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSuccess(111,"");
+                    }
+                }, 30);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSuccess(104,"");
+                    }
+                }, 40);
             } else{
-
-                change_add.setVisibility(View.GONE);
-                change_con.setVisibility(View.GONE);
-                change_wel.setVisibility(View.GONE);
-                change_del.setVisibility(View.VISIBLE);
-                change_edit.setVisibility(View.GONE);
-                change_look.setVisibility(View.GONE);
-                change_send.setVisibility(View.GONE);
-                change_share.setVisibility(View.GONE);
-                change_help.setVisibility(View.GONE);
-                change_date_day.setVisibility(View.GONE);
-
-                getdayId(sf3.format(c3.getTime()));
-                getdayId2(sf3.format(c3.getTime()));
-                getdayList(sf3.format(c3.getTime()));
-                getdayPre(sf3.format(c3.getTime()));
+               // NotExpended(sf3,c3);
+                onSuccess(103,"");
             }
             appBarLayout.setExpanded(isExpanded, true);
         });
+    }
+    public void onClick_Add_Note() {
+        Intent intent =new Intent(MainActivity.this,AddNoteActivity.class);
+        //用Bundle携带数据
+        Bundle bundle=new Bundle();
+        //传递name参数为tinyphp
+        bundle.putString("users", users);
+        bundle.putString("ip", ip);
+        bundle.putString("db", db);
+        bundle.putString("user", user);
+        bundle.putString("pwd", pwd);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+    public void fdv(){
+        change_add = findViewById(R.id.change_add);
+        change_con = findViewById(R.id.change_con);
+        change_del = findViewById(R.id.change_del);
+        change_wel = findViewById(R.id.change_wel);
+        change_edit = findViewById(R.id.change_edit);
+        change_look = findViewById(R.id.change_look);
+        change_send = findViewById(R.id.change_send);
+        change_share = findViewById(R.id.change_share);
+        change_help = findViewById(R.id.change_help);
+        change_date_day = findViewById(R.id.change_date_day);
+        bo_yes = findViewById(R.id.bo_yes);
+        bo_to = findViewById(R.id.bo_to);
+        bo_tom = findViewById(R.id.bo_tom);
+        tv_date_tom_add = findViewById(R.id.tv_date_tom_add);
+        tv_date_tom = findViewById(R.id.tv_date_tom);
+        tv_date_to = findViewById(R.id.tv_date_to);
+        tv_date_yes = findViewById(R.id.tv_date_yes);
+        tv_date_day = findViewById(R.id.tv_date_day);
+        tv_day_id =(TextView)findViewById(R.id.tv_day_id);
+        tv_day_id2 =(TextView)findViewById(R.id.tv_day_id2);
+        tv_day_list =(TextView)findViewById(R.id.tv_day_list);
+        tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
+        lv = (ListView) findViewById(R.id.lv);
+    }
+    public void vis(){
+        change_add.setVisibility(View.GONE);
+        change_con.setVisibility(View.GONE);
+        change_wel.setVisibility(View.GONE);
+        change_del.setVisibility(View.VISIBLE);
+        change_edit.setVisibility(View.GONE);
+        change_look.setVisibility(View.GONE);
+        change_send.setVisibility(View.GONE);
+        change_share.setVisibility(View.GONE);
+        change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.GONE);
+        bo_yes.setVisibility(View.GONE);
+        bo_to.setVisibility(View.VISIBLE);
+        bo_tom.setVisibility(View.GONE);
+    }
+    public void ifExpanded(){
+        SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c3 = Calendar.getInstance();
+        tv_date_day.setText(sf3.format(c3.getTime()));
+        SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
+        Calendar c4 = Calendar.getInstance();
+        String date_to = sf4.format(c4.getTime());
+        if(change_add.getVisibility()==(View.VISIBLE))
+        {state_1 = 1;}
+        if(change_con.getVisibility()==(View.VISIBLE))
+        {state_1 = 2;}
+        if(change_wel.getVisibility()==(View.VISIBLE))
+        {state_1 = 3;}
+        if(change_del.getVisibility()==(View.VISIBLE))
+        {state_1 = 4;}
+        if(change_edit.getVisibility()==(View.VISIBLE))
+        {state_1 = 5;}
+        if(change_look.getVisibility()==(View.VISIBLE))
+        {state_1 = 6;}
+        if(change_send.getVisibility()==(View.VISIBLE))
+        {state_1 = 7;}
+        if(change_share.getVisibility()==(View.VISIBLE))
+        {state_1 = 8;}
+        if(change_help.getVisibility()==(View.VISIBLE))
+        {state_1 = 9;}
+
+        change_add.setVisibility(View.GONE);
+        change_con.setVisibility(View.GONE);
+        change_wel.setVisibility(View.GONE);
+        change_del.setVisibility(View.GONE);
+        change_edit.setVisibility(View.GONE);
+        change_look.setVisibility(View.GONE);
+        change_send.setVisibility(View.GONE);
+        change_share.setVisibility(View.GONE);
+        change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.VISIBLE);
+
+            getdayId(date_to);
+            getdayId2(date_to);
+            getdayList(date_to);
+            getdayPre(date_to);
+
+    }
+    public void NotExpended(){
+        SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
+        Calendar c4 = Calendar.getInstance();
+        String date_to = sf4.format(c4.getTime());
+
+        switch (state_1){
+            case 1:
+                change_add.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                change_con.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                change_wel.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                change_del.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                change_edit.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                change_look.setVisibility(View.VISIBLE);
+                break;
+            case 7:
+                change_send.setVisibility(View.VISIBLE);
+                break;
+            case 8:
+                change_share.setVisibility(View.VISIBLE);
+                break;
+            case 9:
+                change_help.setVisibility(View.VISIBLE);
+                break;
+            default:
+                Toast.makeText(this,"错误代码，无法识别", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        change_date_day.setVisibility(View.GONE);
+
+        getdayId(date_to);
+        getdayId2(date_to);
+        getdayList(date_to);
+        getdayPre(date_to);
     }
     private void setCurrentDate(Date date) {
         setSubtitle(dateFormat.format(date));
@@ -289,7 +384,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
     public void onSuccess(int i, String json) {
-        Log.i("Channel", "onSuccess");
+       // Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
         message.what = i;
         Bundle bundle = new Bundle();
@@ -298,7 +393,7 @@ public class MainActivity extends AppCompatActivity
         mHandler.sendMessage(message);
     }
     public void onSuccess2(int i, int json) {
-        Log.i("Channel", "onSuccess");
+       // Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
         message.what = i;
         Bundle bundle = new Bundle();
@@ -811,23 +906,16 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(MainActivity.this, Connect.class));
-
-          /*  change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.VISIBLE);*/
             return true;
         }
         if (id == R.id.action_help) {
-            startActivity(new Intent(MainActivity.this, Connect.class));
+            startActivity(new Intent(MainActivity.this, StartActivity.class));
+            return true;
+        }
+        if (id == R.id.action_add) {
+            onClick_Add_Note();
             return true;
         }
 
@@ -839,89 +927,80 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Handler handler = new Handler();
         if (id == R.id.nav_camera) {
-            // Handle the camera action
-            change_add.setVisibility(View.VISIBLE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.GONE);
+            //  change_add
+            //onSuccess(110,"");
+            onSuccess(110,"");
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(111,"");
+                }
+            }, 50);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(110,"");
+                }
+            }, 60);
+
 
         } else if (id == R.id.nav_gallery) {
             /*tv.setText("hi");*/
 
         } else if (id == R.id.nav_slideshow) {
-            change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.VISIBLE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.GONE);
-
-        } else if (id == R.id.nav_manage) {
-
-            change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.VISIBLE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.GONE);
-
-            new Thread(new Runnable() {
+            //  change_del
+            onSuccess(105,"");
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        String url = "jdbc:mysql://" + ip + "/" + db;
-                        //  System.out.println(url);
-                        Class.forName("com.mysql.jdbc.Driver");
-                        Connection cn = DriverManager.getConnection(url, user, pwd);
-                        String sql = "select * from student";
-                        Statement st = (Statement) cn.createStatement();
-                        ResultSet rs = st.executeQuery(sql);
-                        System.out.println("成功读取数据库！！");
-                        while (rs.next()) {
-                            String mybook = rs.getString("S_Name");
-                            //  System.out.println(mybook);
-                            int id = rs.getInt("id");
-                            String s = String.valueOf(id);
-                            tv_count.setText(s);
-                            System.out.println(id);
-                        }
-                        cn.close();
-                        st.close();
-                        rs.close();
-                        System.out.println("数据库关闭");
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    onSuccess(111,"");
                 }
-            }).start();
-            lv.setAdapter(new MyAdapter());
-            lv_name.setAdapter(new MyAdapter());
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(105,"");
+                }
+            }, 60);
+
+
+        } else if (id == R.id.nav_manage) {
+            //  change_look
+           onSuccess(112,"");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(111,"");
+                }
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(112,"");
+                }
+            }, 60);
+
         } else if (id == R.id.nav_share) {
             //  startActivity(new Intent(MainActivity.this, Login.class));//红色部分为要打开的新窗口的类名
-            change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.GONE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.VISIBLE);
-            change_help.setVisibility(View.GONE);
+            //  change_share
+            onSuccess(113,"");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(111,"");
+                }
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(113,"");
+                }
+            }, 60);
+
 
             final ConstraintLayout cut2=(ConstraintLayout)findViewById(R.id.cut2);
             final ImageView im_logo2=(ImageView)findViewById(R.id.im_logo2);
@@ -929,14 +1008,12 @@ public class MainActivity extends AppCompatActivity
             //  tv.setBackgroundColor(Color.GREEN);
             // tv.setDrawingCacheEnabled(true);
 
-
             final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     viewSaveToImage(im_logo2);
                 }
             };
-
             Button button = (Button) findViewById(R.id.bt_share);
             button.setOnClickListener(new View.OnClickListener() {
 
@@ -960,70 +1037,56 @@ public class MainActivity extends AppCompatActivity
                     share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
                     MainActivity.this.startActivity(share_intent);
 
+                   /* Intent share_intent = new Intent();
+                    share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                   // share_intent.setType("text/plain");//设置分享内容的类型
+                    share_intent.setType("image/*");  //设置分享内容的类型
+                    share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
+                    share_intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("http://20vv455999.iask.in:22467/WebServer/image/share.png"));
+                    //share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
+                    share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
+                    MainActivity.this.startActivity(share_intent);*/
+
                     // WeiXinShareUtil.sharePhotoToWX(MainActivity.this,"不想说话，你们开心就好",android.os.Environment.MEDIA_MOUNTED);
 
                 }
             });
 
-/*
-            LinearLayout  cut=(LinearLayout)findViewById(R.id.cut);
-            cut.setDrawingCacheEnabled(true);
-            cut.buildDrawingCache();
-            mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
+        } else if (id == R.id.nav_send) {
+            //  change_wel
+           onSuccess(114,"");
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // 要在运行在子线程中
-                    LinearLayout  cut=(LinearLayout)findViewById(R.id.cut);
-                    final Bitmap bmp = cut.getDrawingCache(); // 获取图片
-                    savePicture(bmp, "test.jpg");// 保存图片
-                    cut.destroyDrawingCache(); // 保存过后释放资源
+                    onSuccess(111,"");
                 }
-            }, 100);*/
-          /*
-            Intent share_intent = new Intent();
-            share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-            //share_intent.setType("image/*");  //设置分享内容的类型
-            share_intent.setType("text/plain");//设置分享内容的类型
-            share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
-            share_intent.putExtra(Intent.EXTRA_TEXT, "不杀生用什么祭天？");//添加分享内容
-           // share_intent.putExtra(Intent.EXTRA_TEXT, "我想用点东西祭天");
-          //  share_intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageUri);
-           // share_intent.putExtra(Intent.EXTRA_STREAM, saveBitmap(bgimg0,"img"));
-            //创建分享的Dialog
-            share_intent = Intent.createChooser(share_intent, "杀生是不对的");
-           MainActivity.this.startActivity(share_intent);*/
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(114,"");
+                }
+            }, 60);
 
-
-            // String imageUri = insertImageToSystem(MainActivity.this, Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
-            // WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好",Uri.parse(imageUri);
-            //  WeiXinShareUtil.sharePhotoToWX(this,"不想说话，你们开心就好","/DCIM/camera");
-
-            //  startActivity(new Intent(MainActivity.this, StartActivity.class));
-        } else if (id == R.id.nav_send) {
-            change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.VISIBLE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.GONE);
 
         } else if (id == R.id.home) {
-            change_add.setVisibility(View.GONE);
-            change_con.setVisibility(View.GONE);
-            change_wel.setVisibility(View.VISIBLE);
-            change_del.setVisibility(View.GONE);
-            change_edit.setVisibility(View.GONE);
-            change_look.setVisibility(View.GONE);
-            change_send.setVisibility(View.GONE);
-            change_share.setVisibility(View.GONE);
-            change_help.setVisibility(View.GONE);
+            //  change_wel
+            onSuccess(115,"");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(111,"");
+                }
+            }, 50);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(115,"");
+                }
+            }, 60);
+
 
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         drawer.setScrimColor(Color.TRANSPARENT);
@@ -1031,17 +1094,6 @@ public class MainActivity extends AppCompatActivity
     }
     public void connect(View view) {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
-    }
-    public void wel(View view){
-        change_add.setVisibility(View.GONE);
-        change_con.setVisibility(View.GONE);
-        change_wel.setVisibility(View.VISIBLE);
-        change_del.setVisibility(View.GONE);
-        change_edit.setVisibility(View.GONE);
-        change_look.setVisibility(View.GONE);
-        change_send.setVisibility(View.GONE);
-        change_share.setVisibility(View.GONE);
-        change_help.setVisibility(View.GONE);
     }
     private class MyAdapter extends BaseAdapter {
 
@@ -1236,7 +1288,7 @@ public class MainActivity extends AppCompatActivity
 
         // 添加水印
         Bitmap bitmap = Bitmap.createBitmap(createWatermarkBitmap(cachebmp,
-                "霍达出品"));
+                "HD"));
 
         FileOutputStream fos;
         try {
@@ -1299,7 +1351,7 @@ public class MainActivity extends AppCompatActivity
         canvas.drawBitmap(target, 0, 0, p);
 
         // 在中间位置开始添加水印
-        canvas.drawText(str, w-w / 9, h / 9, p);
+        canvas.drawText(str, w-8*w / 9, h / 9, p);
 
         canvas.save(Canvas.ALL_SAVE_FLAG);
         canvas.restore();
@@ -1350,6 +1402,176 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 110:
+                    change_add.setVisibility(View.VISIBLE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.GONE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+                    break;
+                case 111:
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.GONE);
+                    change_del.setVisibility(View.VISIBLE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+                    break;
+                case 112:
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.GONE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.VISIBLE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db;
+                                //  System.out.println(url);
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+                                String sql = "select * from student";
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+                                System.out.println("成功读取数据库！！");
+                                while (rs.next()) {
+                                    String mybook = rs.getString("S_Name");
+                                    //  System.out.println(mybook);
+                                    int id = rs.getInt("id");
+                                    String s = String.valueOf(id);
+                                    tv_count.setText(s);
+                                    System.out.println(id);
+                                }
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                System.out.println("数据库关闭");
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    lv.setAdapter(new MyAdapter());
+                    lv_name.setAdapter(new MyAdapter());
+                    break;
+                case 113:
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.GONE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.VISIBLE);
+                    change_help.setVisibility(View.GONE);
+                    break;
+                case 114:
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.VISIBLE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+                    break;
+                case 115:
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.VISIBLE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+                    break;
+                case 116:
+                    break;
+                case 117:
+                    break;
+                case 118:
+                    break;
+                case 105:
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            vis();
+                        }
+                    }, 50);
+                   // vis();
+                    change_add.setVisibility(View.GONE);
+                    change_con.setVisibility(View.GONE);
+                    change_wel.setVisibility(View.GONE);
+                    change_del.setVisibility(View.GONE);
+                    change_edit.setVisibility(View.GONE);
+                    change_look.setVisibility(View.GONE);
+                    change_send.setVisibility(View.GONE);
+                    change_share.setVisibility(View.GONE);
+                    change_help.setVisibility(View.GONE);
+                    change_date_day.setVisibility(View.GONE);
+                    bo_yes.setVisibility(View.GONE);
+                    bo_to.setVisibility(View.GONE);
+                    bo_tom.setVisibility(View.GONE);
+
+                    break;
+                case 104:
+                    ifExpanded();
+                    break;
+                case 103:
+                    NotExpended();
+                    break;
+                case 102:
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+                    Calendar c = Calendar.getInstance();
+                    tv_date_to.setText(sf.format(c.getTime()));
+                    //  System.out.println(“当前日期：               ”+sf.format(c.getTime()));
+                    c.add(Calendar.DAY_OF_MONTH, 1);
+                    //   System.out.println(“增加一天后日期 ：  ”+sf.format(c.getTime()));
+                    tv_date_tom.setText(sf.format(c.getTime()));
+                    //  tv_date_tom_add.setText(sf.format(c.getTime()));
+                    c.add(Calendar.DAY_OF_MONTH, -2);
+                    tv_date_yes.setText(sf.format(c.getTime()));
+                    break;
+                case 101:
+                    Bundle bundle101 = msg.getData();
+                    String day0 = bundle101.getString("json");
+                    tv_date_day.setText(day0);
+                    //refresh
+                    tv_day_id.setText("id");
+                    tv_day_id2.setText("id");
+                    tv_day_list.setText("系统提示");
+                    tv_day_pre.setText("待办事项");
+                    //get
+                    getdayId(day0);
+                    getdayId2(day0);
+                    getdayList(day0);
+                    getdayPre(day0);
+                    break ;
+                case 100:
+                    SmartImageView siv = (SmartImageView) findViewById(R.id.smart_v);
+                    siv.setImageUrl("http://20vv455999.iask.in:22467/WebServer/image/share.png", R.drawable.ic_menu_camera);
+                    break;
+                case 99:
+                   // vis();
+                    break;
                 case 0:
                     TextView tv_yes_id = (TextView)findViewById(R.id.tv_yes_id);
                     //完成主界面更新,拿到数据

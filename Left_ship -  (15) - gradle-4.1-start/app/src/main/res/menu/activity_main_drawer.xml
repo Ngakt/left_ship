@@ -9,38 +9,31 @@
                 <item
                     android:id="@+id/nav_camera"
                     android:icon="@drawable/ic_menu_camera"
-                    android:title="上报"/>
+                    android:title="上报" />
                 <item
                     android:id="@+id/nav_gallery"
                     android:icon="@drawable/ic_menu_gallery"
                     android:title="修改"
-                    android:visible="false"/>
+                    android:visible="false" />
                 <item
                     android:id="@+id/nav_slideshow"
                     android:icon="@drawable/ic_menu_slideshow"
-                    android:title="日程"/>
+                    android:title="日程" />
                 <item
                     android:id="@+id/nav_manage"
                     android:icon="@drawable/ic_menu_manage"
                     android:title="查询"
-                    android:visible="false"/>
-            </group>
-        </menu>
-    </item>
+                    android:visible="false" />
 
-    <item android:title="communicate">
-        <menu
-            >
-            <group
-                >
+
                 <item
                     android:id="@+id/nav_share"
                     android:icon="@drawable/ic_menu_share"
-                    android:title="分享"/>
+                    android:title="分享" />
                 <item
                     android:id="@+id/nav_send"
                     android:icon="@drawable/ic_menu_send"
-                    android:title="联系"/>
+                    android:title="联系" />
             </group>
         </menu>
     </item>

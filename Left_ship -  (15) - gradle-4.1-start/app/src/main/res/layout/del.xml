@@ -11,15 +11,7 @@
     tools:context="com.example.huoda.left_ship.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/del2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+
 
         <include
             android:id="@+id/bo_yes"
@@ -48,7 +40,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-    </android.support.constraint.ConstraintLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_date"
@@ -64,8 +56,7 @@
         app:fab_size="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        android:layout_marginRight="40dp"/>
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
