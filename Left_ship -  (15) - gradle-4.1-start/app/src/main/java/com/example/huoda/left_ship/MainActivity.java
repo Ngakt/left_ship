@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE" };
     public Handler nHandler;
-
+    public TextView rot;
     protected static String  users="user1",ip="pcohd.uicp.cn:24967",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
     private BottomNavigationBar bottomNavigationBar;
@@ -258,6 +258,7 @@ public class MainActivity extends AppCompatActivity
         tv_day_list =(TextView)findViewById(R.id.tv_day_list);
         tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
         lv = (ListView) findViewById(R.id.lv);
+         rot=(TextView)findViewById(R.id.rot);
     }
     public void vis(){
         change_add.setVisibility(View.GONE);
@@ -273,6 +274,7 @@ public class MainActivity extends AppCompatActivity
         bo_yes.setVisibility(View.GONE);
         bo_to.setVisibility(View.VISIBLE);
         bo_tom.setVisibility(View.GONE);
+
     }
     public void ifExpanded(){
         SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1388,6 +1390,10 @@ public class MainActivity extends AppCompatActivity
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }
+    }
+    private void qqUI(View view)
+    {
+        startActivity(new Intent(MainActivity.this, Connect.class));
     }
     Handler mHandler = new Handler() {
 
