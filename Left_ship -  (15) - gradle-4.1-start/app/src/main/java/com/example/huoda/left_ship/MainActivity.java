@@ -94,22 +94,13 @@ public class MainActivity extends AppCompatActivity
     public int state_1=1;
 
 
-    private float mPosX, mPosY, mCurPosX, mCurPosY;
-    private static final int FLING_MIN_DISTANCE = 20;// 移动最小距离
-    private static final int FLING_MIN_VELOCITY = 200;// 移动最大速度
-
-    float x1 = 0;
-    float x2 = 0;
-    float y1 = 0;
-    float y2 = 0;
-
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
+        // detector = new GestureDetector(this, (GestureDetector.OnGestureListener) this);
 
         fdv();
         vis();
@@ -117,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                onSuccess(111,"");
+                SetGone();
             }
         }, 50);
         handler.postDelayed(new Runnable() {
@@ -197,29 +188,40 @@ public class MainActivity extends AppCompatActivity
             float rotation = isExpanded ? 0 : 180;
             ViewCompat.animate(arrow).rotation(rotation).start();
             isExpanded = !isExpanded;
-            SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar c3 = Calendar.getInstance();
-            if (isExpanded) {
 
-                onSuccess(104,"");
+            if (isExpanded) {
+                //onSuccess(104,"");
+                ifExpanded();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        onSuccess(111,"");
+                        SetGone();
                     }
-                }, 30);
+                }, 50);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        onSuccess(104,"");
+                        ifExpanded();
                     }
-                }, 40);
+                }, 100);
             } else{
-               // NotExpended(sf3,c3);
-                onSuccess(103,"");
+                NotExpended();
+                //  onSuccess(103,"");
             }
             appBarLayout.setExpanded(isExpanded, true);
         });
+    }
+    public void SetGone(){
+        change_add.setVisibility(View.GONE);
+        change_con.setVisibility(View.GONE);
+        change_wel.setVisibility(View.GONE);
+        change_del.setVisibility(View.GONE);
+        change_edit.setVisibility(View.GONE);
+        change_look.setVisibility(View.GONE);
+        change_send.setVisibility(View.GONE);
+        change_share.setVisibility(View.GONE);
+        change_help.setVisibility(View.GONE);
+        change_date_day.setVisibility(View.GONE);
     }
     public void onClick_Add_Note() {
         Intent intent =new Intent(MainActivity.this,AddNoteActivity.class);
@@ -311,17 +313,18 @@ public class MainActivity extends AppCompatActivity
         change_help.setVisibility(View.GONE);
         change_date_day.setVisibility(View.VISIBLE);
 
-            getdayId(date_to);
-            getdayId2(date_to);
-            getdayList(date_to);
-            getdayPre(date_to);
+        getdayId(date_to);
+        getdayId2(date_to);
+        getdayList(date_to);
+        getdayPre(date_to);
 
     }
     public void NotExpended(){
         SimpleDateFormat sf4 = new SimpleDateFormat("yyyyMMdd");
         Calendar c4 = Calendar.getInstance();
         String date_to = sf4.format(c4.getTime());
-
+        change_date_day.setVisibility(View.GONE);
+        System.out.println(state_1);
         switch (state_1){
             case 1:
                 change_add.setVisibility(View.VISIBLE);
@@ -354,12 +357,8 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this,"错误代码，无法识别", Toast.LENGTH_SHORT).show();
                 break;
         }
-        change_date_day.setVisibility(View.GONE);
 
-        getdayId(date_to);
-        getdayId2(date_to);
-        getdayList(date_to);
-        getdayPre(date_to);
+
     }
     private void setCurrentDate(Date date) {
         setSubtitle(dateFormat.format(date));
@@ -384,7 +383,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
     public void onSuccess(int i, String json) {
-       // Log.i("Channel", "onSuccess");
+        // Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
         message.what = i;
         Bundle bundle = new Bundle();
@@ -393,7 +392,7 @@ public class MainActivity extends AppCompatActivity
         mHandler.sendMessage(message);
     }
     public void onSuccess2(int i, int json) {
-       // Log.i("Channel", "onSuccess");
+        // Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
         message.what = i;
         Bundle bundle = new Bundle();
@@ -768,8 +767,8 @@ public class MainActivity extends AppCompatActivity
                     String url = "jdbc:mysql://" + ip + "/" + db;
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
-                   // SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                   // Calendar c2 = Calendar.getInstance();
+                    // SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                    // Calendar c2 = Calendar.getInstance();
                     String sql = "select id from tips where user = '"+users+"' and date = "+date ;
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
@@ -778,7 +777,7 @@ public class MainActivity extends AppCompatActivity
                         int mybook = rs.getInt("id");
                         String x=mybook+"";
                         if (x!=null)
-                        onSuccess2(13, mybook);
+                            onSuccess2(13, mybook);
                         else
                             onSuccess2(13, 0X00);
                     }
@@ -936,7 +935,7 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
 
@@ -957,7 +956,7 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
             handler.postDelayed(new Runnable() {
@@ -970,11 +969,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
             //  change_look
-           onSuccess(112,"");
+            onSuccess(112,"");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
             handler.postDelayed(new Runnable() {
@@ -991,7 +990,7 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
             handler.postDelayed(new Runnable() {
@@ -1054,11 +1053,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
             //  change_wel
-           onSuccess(114,"");
+            onSuccess(114,"");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
             handler.postDelayed(new Runnable() {
@@ -1075,7 +1074,7 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onSuccess(111,"");
+                    SetGone();
                 }
             }, 50);
             handler.postDelayed(new Runnable() {
@@ -1516,7 +1515,7 @@ public class MainActivity extends AppCompatActivity
                             vis();
                         }
                     }, 50);
-                   // vis();
+                    // vis();
                     change_add.setVisibility(View.GONE);
                     change_con.setVisibility(View.GONE);
                     change_wel.setVisibility(View.GONE);
@@ -1570,7 +1569,7 @@ public class MainActivity extends AppCompatActivity
                     siv.setImageUrl("http://20vv455999.iask.in:22467/WebServer/image/share.png", R.drawable.ic_menu_camera);
                     break;
                 case 99:
-                   // vis();
+                    // vis();
                     break;
                 case 0:
                     TextView tv_yes_id = (TextView)findViewById(R.id.tv_yes_id);

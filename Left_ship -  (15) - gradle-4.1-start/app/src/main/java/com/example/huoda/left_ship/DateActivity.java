@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -128,6 +129,10 @@ public String users,ip,db,user,pwd;
     }
 
     private void submitTomPre(final String ip, final String db, final String user, final String pwd, final String pre,final String users,final String date){
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
