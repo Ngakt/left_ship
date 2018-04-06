@@ -1,0 +1,4 @@
+#Thu Apr 05 22:20:39 CST 2018
+base.0=C\:\\WorkSpace\\left_ship\\Left_ship -  (15) - gradle-4.1-start\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
+path.0=classes.dex
+renamed.0=classes.dex
