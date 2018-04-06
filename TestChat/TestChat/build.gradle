@@ -2,12 +2,12 @@
 
 buildscript {
     repositories {
-        google()
         jcenter()
         maven {
             url 'http://maven.aliyun.com/nexus/content/groups/public'
             name 'Google'
         }
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -18,22 +18,13 @@ buildscript {
 }
 
 allprojects {
-    tasks.withType(JavaCompile) {
-        sourceCompatibility = '1.7'
-        targetCompatibility = '1.7'
-
-    }
     repositories {
-        google()
         jcenter()
         maven {
             url 'http://maven.aliyun.com/nexus/content/groups/public'
             name 'Google'
         }
-        maven { url 'https://jitpack.io' }
-        maven{
-            url "https://raw.github.com/bmob/bmob-android-sdk/master"
-        }
+        google()
     }
 }
 
