@@ -30,10 +30,7 @@ allprojects {
             url 'http://maven.aliyun.com/nexus/content/groups/public'
             name 'Google'
         }
-        maven { url 'https://jitpack.io' }
-        maven{
-            url "https://raw.github.com/bmob/bmob-android-sdk/master"
-        }
+
     }
 }
 
