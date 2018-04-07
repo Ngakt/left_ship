@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <attr format="integer" name="cbd_calendar_row"/>
-    <declare-styleable name="CalendarDateView"><attr name="cbd_calendar_row"/></declare-styleable>
-    <string name="app_name">My Library</string>
-</resources>
