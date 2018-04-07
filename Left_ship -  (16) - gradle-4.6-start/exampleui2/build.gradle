@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
 
-        minSdkVersion 23
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -20,7 +20,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     "$project.rootDir/tools/proguard-rules.pro"
         }
-
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    "$project.rootDir/tools/proguard-rules-debug.pro"
+        }
     }
 
     lintOptions {
@@ -41,6 +45,6 @@ dependencies {
     compile 'com.android.support:design:27.1.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
-    implementation project(':imui')
-    implementation project(':chatinput')
+    compile project(':imui')
+    compile project(':chatinput')
 }

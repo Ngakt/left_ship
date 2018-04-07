@@ -1,1 +1,1 @@
-include ':app', ':chatinput', ':imui', ':exampleui'
+include ':app', ':chatinput', ':imui', ':exampleui2'

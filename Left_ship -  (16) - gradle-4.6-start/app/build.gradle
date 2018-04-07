@@ -35,8 +35,7 @@ dependencies {
     api 'com.android.support:appcompat-v7:27.+'
     api 'com.android.support:design:27.+'
     api 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'cn.jiguang.imui:chatinput:0.7.3'
-    compile 'cn.jiguang.imui:messagelist:0.7.2'
+
     compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
     compile 'com.github.clans:fab:1.6.4'
     testCompile 'junit:junit:4.12'
@@ -44,6 +43,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':chatinput')
-    implementation project(':exampleui')
     implementation project(':imui')
+    implementation project(':exampleui2')
 }
