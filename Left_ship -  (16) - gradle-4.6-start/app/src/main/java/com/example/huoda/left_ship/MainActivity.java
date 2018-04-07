@@ -1369,7 +1369,7 @@ public class MainActivity extends AppCompatActivity
                     String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
-                    String sql1 = "insert into student (S_name)values('"+et1+et2+et3+et4+"')";
+                    String sql1 = "insert into plants (S_name)values('"+et1+et2+et3+et4+"')";
                     Statement st1 = (Statement) cn.createStatement();
                     int Res1 = st1.executeUpdate(sql1);
                     //System.out.println(Res1 > 0 ? "插入数据成功" : "插入数据失败");
