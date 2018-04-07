@@ -3,6 +3,14 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_IMUI"
+        android:icon="@drawable/qq2"
+        android:orderInCategory="90"
+        android:title="技术咨询"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_add"
         android:icon="?android:attr/actionModePasteDrawable"
         android:orderInCategory="90"

@@ -67,6 +67,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import imui.jiguang.cn.imuisample.messages.MessageListActivity;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -110,13 +112,13 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 SetGone();
             }
-        }, 9);
+        }, 20);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 vis();
             }
-        }, 100);
+        }, 30);
         onSuccess(102,"");
 
 
@@ -917,7 +919,10 @@ public class MainActivity extends AppCompatActivity
             onClick_Add_Note();
             return true;
         }
-
+        if (id == R.id.action_IMUI) {
+           qqUI();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -1391,9 +1396,10 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-    private void qqUI(View view)
+    private void qqUI()
     {
-        startActivity(new Intent(MainActivity.this, Connect.class));
+        //startActivity(new Intent(MainActivity.this, MessageListActivity.class));
+        onSuccess(70,"");
     }
     Handler mHandler = new Handler() {
 
@@ -1401,6 +1407,9 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 70:
+                    startActivity(new Intent(MainActivity.this, MessageListActivity.class));
+                    break;
 
                 case 60://设置昨天的
                     bo_yes.setVisibility(View.VISIBLE);
