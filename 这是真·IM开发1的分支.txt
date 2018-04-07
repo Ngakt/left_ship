@@ -2,3 +2,5 @@
 
 application2
 成功使用IMUI
+
+主程序添加IMUI
