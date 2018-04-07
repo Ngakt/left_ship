@@ -70,7 +70,7 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 
         mChatView = (ChatView) findViewById(R.id.chat_view);
         mChatView.initModule();
-        mChatView.setTitle("Deadpool");
+        mChatView.setTitle("技术咨询");
         mData = getMessages();
         initMsgAdapter();
 
@@ -260,7 +260,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                 message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
                 message.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
             }
-            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+           // message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            message.setTimeString("11:20");
             list.add(message);
         }
         return list;
