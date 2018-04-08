@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity
                 //用Bundle携带数据
                 Bundle bundle=new Bundle();
                 //传递name参数为tinyphp
-                bundle.putString("users", users);
+                bundle.putString("users", users);//users是数据库里面列；内容默认是user1
                 bundle.putString("ip", ip);
                 bundle.putString("db", db);
-                bundle.putString("user", user);
+                bundle.putString("user", user);//user 是数据库登陆账号//我们用的是test
                 bundle.putString("pwd", pwd);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -1547,7 +1547,18 @@ public class MainActivity extends AppCompatActivity
                     requestLocatePermisson();
                     break;
                 case 70:
-                    startActivity(new Intent(MainActivity.this, MessageListActivity.class));
+                    Intent intent =new Intent(MainActivity.this,MessageListActivity.class);
+//用Bundle携带数据
+                    Bundle bundle=new Bundle();
+//传递name参数为tinyphp
+                    bundle.putString("users", users);//users是数据库里面列；内容默认是user1
+                    bundle.putString("ip", ip);
+                    bundle.putString("db", db);
+                    bundle.putString("user", user);//user 是数据库登陆账号//我们用的是test
+                    bundle.putString("pwd", pwd);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                   // startActivity(new Intent(MainActivity.this, MessageListActivity.class));
                     break;
 
                 case 60://设置昨天的

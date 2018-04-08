@@ -51,6 +51,8 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 public class MessageListActivity extends Activity implements ChatView.OnKeyboardChangedListener,
         ChatView.OnSizeChangedListener, View.OnTouchListener {
 
+    public String users,ip,db,user,pwd;
+
     private final int REQUEST_RECORD_VOICE_PERMISSION = 0x0001;
     private final int REQUEST_CAMERA_PERMISSION = 0x0002;
     private final int REQUEST_PHOTO_PERMISSION = 0x0003;
@@ -188,6 +190,9 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                 message.setMediaFilePath(voiceFile.getPath());
                 message.setDuration(duration);
                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+
+                //将发送信息记录到数据库，再发一遍？
+
                 mAdapter.addToStart(message, true);
             }
 
@@ -204,6 +209,11 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                 message.setMediaFilePath(photoPath);
                 message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+
+                //记录到数据库
+                //或者发送到服务器——获得返回信息——url——记录url再发一遍，去掉这个图片发送；
+
+
                 MessageListActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -257,25 +267,47 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         List<MyMessage> list = new ArrayList<>();
         Resources res = getResources();
         String[] messages = res.getStringArray(R.array.messages_array);
-        for (int i = 9; i>=0; i--) {
+        for (int i = 9; i >= 0; i--) {
             MyMessage message;
             if (i % 2 == 1) {
                 message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT);
                 message.setUserInfo(new DefaultUser("0", "DeadPool", "deadpool"));
-                message.setTimeString("11:2"+i);
+                message.setTimeString("11:2" + i);
             } else {
                 message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
                 message.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
-                message.setTimeString("11:2"+i);
+                message.setTimeString("11:2" + i);
             }
-           // message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-           // message.setTimeString("11:20");
+            // message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            // message.setTimeString("11:20");
             list.add(message);
         }
+
+//        MyMessage message2;
+//        message2 = new MyMessage("nihao", IMessage.MessageType.SEND_TEXT);
+//        message2.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
+//        // message2.setUserInfo(new DefaultUser("0", "DeadPool", "deadpool"));
+//        message2.setTimeString("11:30");
+//        list.add(message2);
+
+
+
         return list;
     }
 
+//
+//        message2 = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
+//
+//        message2.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
+//
+//
+//
+//
+
+
+
     private void initMsgAdapter() {
+
         ImageLoader imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url) {
@@ -305,8 +337,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                         startActivity(intent);
                     }
                 } else {
-                    Toast.makeText(mContext, mContext.getString(R.string.message_click_hint),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, mContext.getString(R.string.message_click_hint),
+//                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -314,8 +346,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
             public void onMessageLongClick(MyMessage message) {
-                Toast.makeText(mContext, mContext.getString(R.string.message_long_click_hint),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, mContext.getString(R.string.message_long_click_hint),
+//                        Toast.LENGTH_SHORT).show();
                 // do something
             }
         });
@@ -324,8 +356,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
             @Override
             public void onAvatarClick(MyMessage message) {
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Toast.makeText(mContext, mContext.getString(R.string.avatar_click_hint),
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, mContext.getString(R.string.avatar_click_hint),
+//                        Toast.LENGTH_SHORT).show();
                 // do something
             }
         });
