@@ -257,17 +257,19 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         List<MyMessage> list = new ArrayList<>();
         Resources res = getResources();
         String[] messages = res.getStringArray(R.array.messages_array);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 9; i>=0; i--) {
             MyMessage message;
-            if (i % 2 == 0) {
+            if (i % 2 == 1) {
                 message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT);
                 message.setUserInfo(new DefaultUser("0", "DeadPool", "deadpool"));
+                message.setTimeString("11:2"+i);
             } else {
                 message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
                 message.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
+                message.setTimeString("11:2"+i);
             }
            // message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-            message.setTimeString("11:20");
+           // message.setTimeString("11:20");
             list.add(message);
         }
         return list;
