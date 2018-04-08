@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = MainActivity.class.getSimpleName();
     private final int REQUEST_CODE_CAMERA = 101;
-    private final int REQUEST_CODE_AUDIO = 101;
-    private final int REQUEST_CODE_LOCATE = 101;
+    private final int REQUEST_CODE_AUDIO = 102;
+    private final int REQUEST_CODE_LOCATE = 103;
 
     private AppBarLayout appBarLayout;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);

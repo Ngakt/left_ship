@@ -135,7 +135,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                         && ActivityCompat.checkSelfPermission(mContext,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(mContext,
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
+                {
                     ActivityCompat.requestPermissions(MessageListActivity.this, new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.READ_EXTERNAL_STORAGE,
