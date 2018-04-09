@@ -47,4 +47,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':imui')
     compile project(':chatinput')
+    implementation files('build/mysql-connector-java-5.1.30-bin.jar')
 }
