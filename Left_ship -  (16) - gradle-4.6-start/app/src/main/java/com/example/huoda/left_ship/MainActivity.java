@@ -1606,7 +1606,7 @@ public class MainActivity extends AppCompatActivity
                                 Calendar c = Calendar.getInstance();
                                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
                                 //      sf.format(c.getTime())
-                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" order by id desc";
+                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
                                 System.out.println(sql);
                                 Statement st = (Statement) cn.createStatement();
                                 ResultSet rs = st.executeQuery(sql);
@@ -1619,7 +1619,7 @@ public class MainActivity extends AppCompatActivity
                                     read_judge_send(send,what,time,id,users,list);
 
                                 }
-                                onSuccess3(76,1,users);
+                              //  onSuccess3(76,1,users);
                                 cn.close();
                                 st.close();
                                 rs.close();
