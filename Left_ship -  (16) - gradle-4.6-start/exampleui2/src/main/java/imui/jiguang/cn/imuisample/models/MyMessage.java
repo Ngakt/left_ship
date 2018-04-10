@@ -1,12 +1,13 @@
 package imui.jiguang.cn.imuisample.models;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.commons.models.IUser;
 
 
-public class MyMessage implements IMessage {
+public class MyMessage implements IMessage, Serializable {
 
     private long id;
     private String text;

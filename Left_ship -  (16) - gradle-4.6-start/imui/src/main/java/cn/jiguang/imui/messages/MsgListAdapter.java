@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import cn.jiguang.imui.commons.ViewHolder;
 import cn.jiguang.imui.commons.models.IMessage;
 
 public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapter<ViewHolder>
-        implements ScrollMoreListener.OnLoadMoreListener {
+        implements ScrollMoreListener.OnLoadMoreListener, Serializable {
 
     // Text message
     private final int TYPE_RECEIVE_TXT = 0;

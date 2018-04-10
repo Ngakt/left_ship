@@ -74,7 +74,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.MsgListAdapter;
 import imui.jiguang.cn.imuisample.messages.MessageListActivity;
+import imui.jiguang.cn.imuisample.models.DefaultUser;
+import imui.jiguang.cn.imuisample.models.MyMessage;
 
 
 public class MainActivity extends AppCompatActivity
@@ -84,6 +88,9 @@ public class MainActivity extends AppCompatActivity
     private final int REQUEST_CODE_CAMERA = 101;
     private final int REQUEST_CODE_AUDIO = 102;
     private final int REQUEST_CODE_LOCATE = 103;
+
+    public List<MyMessage> mData,mData2;
+    public  List<MyMessage> list = new ArrayList<>();
 
     private AppBarLayout appBarLayout;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
@@ -157,7 +164,12 @@ public class MainActivity extends AppCompatActivity
             }
         }, 30);
         onSuccess(102,"");
-
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onSuccess(77,"");
+            }
+        }, 100);
 
         //verifyStoragePermissions(MainActivity.this);
 
@@ -436,6 +448,16 @@ public class MainActivity extends AppCompatActivity
         message.what = i;
         Bundle bundle = new Bundle();
         bundle.putInt("json", json);
+        message.setData(bundle);
+        mHandler.sendMessage(message);
+    }
+    public void onSuccess3(int i, int json,String js) {
+        // Log.i("Channel", "onSuccess");
+        Message message = Message.obtain();
+        message.what = i;
+        Bundle bundle = new Bundle();
+        bundle.putInt("json", json);
+        bundle.putString("js", js);
         message.setData(bundle);
         mHandler.sendMessage(message);
     }
@@ -1437,8 +1459,11 @@ public class MainActivity extends AppCompatActivity
     private void qqUI()
     {
         //startActivity(new Intent(MainActivity.this, MessageListActivity.class));
+        mData=list;
+
         onSuccess(70,"");
     }
+
 
     public void requestAudioPermisson() {
 
@@ -1530,6 +1555,36 @@ public class MainActivity extends AppCompatActivity
         }
         return list;
     }
+    public void read_judge_send(String send,String what,String time,int id,String users, List<MyMessage> list){
+
+        if(send.equals(users))
+        {
+           System.out.println(what);
+            MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
+            message.setUserInfo(new DefaultUser("1", users, users));
+            message.setTimeString(time) ;
+            list.add(message);
+
+            // onSuccessmessage(66,message,mAdapter);
+            // mAdapter.addToStart(message, true);
+            //  System.out.println("4");
+
+           // onSuccess3(76,id,send);
+
+        }else {
+            MyMessage message2;
+            message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
+            message2.setUserInfo(new DefaultUser("1", send, send));
+            message2.setTimeString(time);
+            list.add(message2);
+           // add_receive(what,time,send);
+
+
+           // onSuccess3(76,id,send);
+        }
+
+    }
+
 
     Handler mHandler = new Handler() {
 
@@ -1537,6 +1592,84 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 77:
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
+                                //      sf.format(c.getTime())
+                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" order by id desc";
+                                System.out.println(sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                    int id=rs.getInt("id");
+                                    read_judge_send(send,what,time,id,users,list);
+
+                                }
+                                onSuccess3(76,1,users);
+                                cn.close();
+                                st.close();
+                                rs.close();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+
+
+                    break;
+                case 76 :
+                    Bundle bundle76 = msg.getData();
+                    String send = bundle76.getString("js");
+                    int id =  bundle76.getInt("json");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                 Calendar c = Calendar.getInstance();
+//                          c.add(Calendar.DAY_OF_MONTH, 1);
+                                //      sf.format(c.getTime())
+
+                                String sql = " UPDATE chat SET "+send+" = 'y' where  date = "+sf.format(c.getTime());
+                               // String sql = " UPDATE chat SET "+send+" = 'n' where "+send+" = 'y'";
+                                System.out.println(sql);
+                                Statement st = (Statement) cn.createStatement();
+                                int Res = st.executeUpdate(sql);
+                                if (Res>0) {
+                                    onSuccess2(20, 1);
+                                } else {
+                                    onSuccess2(20, 0);
+                                }
+                                cn.close();
+                                st.close();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    break;
                 case 71:
                     requestCameraPermisson();
                     break;
@@ -1547,14 +1680,24 @@ public class MainActivity extends AppCompatActivity
                     requestLocatePermisson();
                     break;
                 case 70:
-                    Intent intent =new Intent(MainActivity.this,MessageListActivity.class);
+                   // Intent intent =new Intent(MainActivity.this,MessageListActivity.class);
+
+                    Intent intent = new Intent(MainActivity.this, MessageListActivity.class);
 //用Bundle携带数据
+                    MessageListActivity.mData = mData;
+                    MessageListActivity.ip = ip;
+                    MessageListActivity.db = db;
+                    MessageListActivity.user = user;
+                    MessageListActivity.users = users;
+                    MessageListActivity.pwd = pwd;
+
                     Bundle bundle=new Bundle();
 //传递name参数为tinyphp
                     bundle.putString("users", users);//users是数据库里面列；内容默认是user1
                     bundle.putString("ip", ip);
                     bundle.putString("db", db);
                     bundle.putString("user", user);//user 是数据库登陆账号//我们用的是test
+                    bundle.putString("users", users);//users 是用户名
                     bundle.putString("pwd", pwd);
                     intent.putExtras(bundle);
                     startActivity(intent);

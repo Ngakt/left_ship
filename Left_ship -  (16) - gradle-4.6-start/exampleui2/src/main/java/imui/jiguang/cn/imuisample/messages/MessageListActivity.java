@@ -57,7 +57,9 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 public class MessageListActivity extends Activity implements ChatView.OnKeyboardChangedListener,
         ChatView.OnSizeChangedListener, View.OnTouchListener {
 
-    public String users,ip,db,user,pwd;
+    public static String  users,ip,db,user,pwd;
+    public static List<MyMessage> mData;
+
 
     private final int REQUEST_RECORD_VOICE_PERMISSION = 0x0001;
     private final int REQUEST_CAMERA_PERMISSION = 0x0002;
@@ -67,7 +69,7 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
-    private List<MyMessage> mData;
+   // private List<MyMessage> mData,mData2;
 
     private InputMethodManager mImm;
     private Window mWindow;
@@ -84,8 +86,15 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         mChatView = (ChatView) findViewById(R.id.chat_view);
         mChatView.initModule();
         mChatView.setTitle("技术咨询");
-        mData = getMessages();
+
+       // mData = getMessages();
+
         initMsgAdapter();
+
+System.out.println(mData);
+
+       // mData2 = data_to();
+       // mAdapter.addToEnd(mData2);
 
         mChatView.setKeyboardChangedListener(this);
         mChatView.setOnSizeChangedListener(this);
@@ -99,13 +108,13 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                 }
 
                 MyMessage message = new MyMessage(input.toString(), IMessage.MessageType.SEND_TEXT);
-                message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
-
+//                message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+                message.setUserInfo(new DefaultUser("1", users, users));
                 String time =new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date());
                 String what =input.toString();
                 message.setTimeString(new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date()) );
 
-
+                insert_text(ip, db, user, pwd,users,time,what,users);
 
                 mAdapter.addToStart(message, true);
 
@@ -297,20 +306,11 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
             // message.setTimeString("11:20");
             list.add(message);
         }
-        onSuccess(2,"","");
+
+   // onSuccess(1,"","");
 
         return list;
     }
-
-//
-//        message2 = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
-//
-//        message2.setUserInfo(new DefaultUser("1", "IronMan", "ironman"));
-//
-//
-//
-//
-
 
 
     private void initMsgAdapter() {
@@ -363,6 +363,10 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
             @Override
             public void onAvatarClick(MyMessage message) {
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
+
+                  String name = userInfo.getDisplayName();
+
+               Toast.makeText(mContext,name, Toast.LENGTH_SHORT).show();
 //                Toast.makeText(mContext, mContext.getString(R.string.avatar_click_hint),
 //                        Toast.LENGTH_SHORT).show();
                 // do something
@@ -480,6 +484,17 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         message.setData(bundle);
         myHandler.sendMessage(message);
     }
+    public void onSuccessmessage(int i, MyMessage message2, MsgListAdapter<MyMessage> mAdapter) {
+        // Log.i("Channel", "onSuccess");
+        Message message = Message.obtain();
+        message.what = i;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("message_", message2);
+        bundle.putSerializable("mAdapter", mAdapter);
+        message.setData(bundle);
+        myHandler.sendMessage(message);
+    }
+
 private void data_yes(){
     new Thread(new Runnable() {
         @Override
@@ -504,7 +519,7 @@ private void data_yes(){
                     {
                         String what =rs.getString("what");
                         String time =rs.getString("time");
-                        add_send(what,time);
+                        //add_send(what,time, mAdapter);
                         int id=rs.getInt("id");
                         change_n(users,id);
                     }else {
@@ -530,6 +545,7 @@ private void data_yes(){
 
 }
 public void change_n(String u,int id){
+    System.out.println("change");
     new Thread(new Runnable() {
         @Override
         public void run() {
@@ -564,12 +580,20 @@ public void change_n(String u,int id){
 }
 public void add_send(String what,String time)
     {
-        List<MyMessage> list = new ArrayList<>();
-        MyMessage message2;
-        message2 = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
+
+//        MyMessage message = new MyMessage("1+1", IMessage.MessageType.SEND_TEXT);
+//        message.setUserInfo(new DefaultUser("1", users, users));
+//        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+//        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//        mAdapter.addToStart(message, true);
+
+
+        MyMessage message2 = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
+        System.out.println(what);
         message2.setUserInfo(new DefaultUser("1", users, users));
         message2.setTimeString(time);
-        list.add(message2);
+        mAdapter.addToStart(message2, true);
+
     }
 
     public void add_receive(String what,String time,String SEND )
@@ -583,12 +607,12 @@ public void add_send(String what,String time)
     }
 
     private void data_to(){
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String url = "jdbc:mysql://" + ip + "/" + db;
+
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
 
@@ -596,29 +620,17 @@ public void add_send(String what,String time)
                     Calendar c = Calendar.getInstance();
                  //   c.add(Calendar.DAY_OF_MONTH, -1);//
                     //      sf.format(c.getTime())
-
                     String sql = "select * from chat where  date = "+sf.format(c.getTime());
                     Statement st = (Statement) cn.createStatement();
                     ResultSet rs = st.executeQuery(sql);
                     while(rs.next())
                     {
                         String send =rs.getString("send");
-                        if(send==users)
-                        {
-                            String what =rs.getString("what");
-                            String time =rs.getString("time");
-                            add_send(what,time);
-                            int id=rs.getInt("id");
-                            change_n(users,id);
-                        }else {
-                            String what =rs.getString("what");
-                            String time =rs.getString("time");
-                            add_receive(what,time,send);
-                            int id=rs.getInt("id");
-                            change_n(send,id);
-                        }
-                        //  int mybook = rs.getInt("id");
-                        //onSuccess2(12, mybook);
+                        String what =rs.getString("what");
+                        String time =rs.getString("time");
+                        int id=rs.getInt("id");
+                        read_judge_send(send,what,time,id,users);
+                        
                     }
                     cn.close();
                     st.close();
@@ -630,38 +642,30 @@ public void add_send(String what,String time)
                 }
             }
         }).start();
-
     }
 
-private void insert_text (String time,String what)
+private void insert_text (final String ip, final String db, final String user, final String pwd, final String users,String time,String what,String send)
 {
     new Thread(new Runnable() {
         @Override
         public void run() {
             try {
-                String url = "jdbc:mysql://" + ip + "/" + db;
+                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection cn = DriverManager.getConnection(url, user, pwd);
-
                 SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                 Calendar c = Calendar.getInstance();
-               String date=sf.format(c.getTime());
-                //   c.add(Calendar.DAY_OF_MONTH, -1);//
-                //      sf.format(c.getTime())
-
-                String sql = " insert into chat(date,time,what) values('"+date+"','"+time+"','"+what+"')";
+                String date=sf.format(c.getTime());
+                String sql = " insert into chat(date,time,what,send,ob) values('"+date+"','"+time+"','"+what+"','"+send+"'"+",1)";
                 Statement st = (Statement) cn.createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                while(rs.next())
-                {
-                    String send =rs.getString("send");
-
-                    //  int mybook = rs.getInt("id");
-                    //onSuccess2(12, mybook);
+                int Res = st.executeUpdate(sql);
+                if (Res>0) {
+                    onSuccess2(20, 1);
+                } else {
+                    onSuccess2(20, 0);
                 }
                 cn.close();
                 st.close();
-                rs.close();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -672,20 +676,48 @@ private void insert_text (String time,String what)
 
 }
 
+public void read_judge_send(String send,String what,String time,int id,String users){
 
+    if(send.equals(users))
+    {
+        System.out.println("equal");
 
+       // add_send(what,time);
+
+        MyMessage  message = new MyMessage("233", IMessage.MessageType.SEND_TEXT);
+        message.setUserInfo(new DefaultUser("1", users, users));
+        message.setTimeString(time) ;
+
+       // onSuccessmessage(66,message,mAdapter);
+       // mAdapter.addToStart(message, true);
+      //  System.out.println("4");
+
+       // change_n(users,id);
+    }else {
+
+        add_receive(what,time,send);
+
+        change_n(send,id);
+    }
+}
 
 
     private Handler myHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
+                case 66:
+                    Bundle bundle66 = msg.getData();
+                    MyMessage message66= (MyMessage) bundle66.getSerializable("message");
+                    MsgListAdapter<MyMessage> mAdapter = (MsgListAdapter<MyMessage>) bundle66.getSerializable("mAdapter");
+                    mAdapter.addToStart(message66, true);
+                    break;
 
                 case 2:
                     data_yes();
                     break;
                 case 1:
-                    data_to();
+
                     break;
 
                 case 0:
@@ -695,6 +727,14 @@ private void insert_text (String time,String what)
                     String data2 =bundle.getString("js");
                     System.out.println(data2);
                     //System.out.println(bundle.getString("json", ""));
+                    break;
+                case 20:
+                    Bundle bundle20 = msg.getData();
+                    int data20 = bundle20.getInt("json");
+                    if (data20==1)
+                        Toast.makeText(MessageListActivity.this, "霍达提示您添加成功", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MessageListActivity.this, "霍达提示您添加失败", Toast.LENGTH_SHORT).show();
                     break;
                 default:break;
             }
