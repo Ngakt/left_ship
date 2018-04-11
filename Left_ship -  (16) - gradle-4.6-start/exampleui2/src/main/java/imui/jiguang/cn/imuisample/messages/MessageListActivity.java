@@ -59,7 +59,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 
     public static String  users,ip,db,user,pwd;
     public static List<MyMessage> mData;
-
+    public  List<MyMessage> list = new ArrayList<>();
+    private boolean Ppp =true;
 
     private final int REQUEST_RECORD_VOICE_PERMISSION = 0x0001;
     private final int REQUEST_CAMERA_PERMISSION = 0x0002;
@@ -88,13 +89,16 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
         mChatView.setTitle("技术咨询");
 
        // mData = getMessages();
+        onSuccess(77,"","");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mData=list;
+                initMsgAdapter();
+            }
+        }, 5000);
 
-        initMsgAdapter();
-
-System.out.println(mData);
-
-       // mData2 = data_to();
-       // mAdapter.addToEnd(mData2);
 
         mChatView.setKeyboardChangedListener(this);
         mChatView.setOnSizeChangedListener(this);
@@ -116,7 +120,7 @@ System.out.println(mData);
 
                 insert_text(ip, db, user, pwd,users,time,what,users);
 
-                mAdapter.addToStart(message, true);
+              //  mAdapter.addToStart(message, true);
 
                 return true;
             }
@@ -484,157 +488,48 @@ System.out.println(mData);
         message.setData(bundle);
         myHandler.sendMessage(message);
     }
-    public void onSuccessmessage(int i, MyMessage message2, MsgListAdapter<MyMessage> mAdapter) {
+    public void onSuccess3String(int i, String send,String what,String time) {
         // Log.i("Channel", "onSuccess");
         Message message = Message.obtain();
         message.what = i;
         Bundle bundle = new Bundle();
-        bundle.putSerializable("message_", message2);
-        bundle.putSerializable("mAdapter", mAdapter);
+        bundle.putString("send", send);
+        bundle.putString("what", what);
+        bundle.putString("time", time);
+        //bundle.putString("users", users);
         message.setData(bundle);
         myHandler.sendMessage(message);
     }
-
-private void data_yes(){
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                String url = "jdbc:mysql://" + ip + "/" + db;
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection cn = DriverManager.getConnection(url, user, pwd);
-
-                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                Calendar c = Calendar.getInstance();
-                c.add(Calendar.DAY_OF_MONTH, -1);//
-                //      sf.format(c.getTime())
-
-                String sql = "select * from chat where  date = "+sf.format(c.getTime());
-                Statement st = (Statement) cn.createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                while(rs.next())
-                {
-                    String send =rs.getString("send");
-                    if(send==users)
-                    {
-                        String what =rs.getString("what");
-                        String time =rs.getString("time");
-                        //add_send(what,time, mAdapter);
-                        int id=rs.getInt("id");
-                        change_n(users,id);
-                    }else {
-                        String what =rs.getString("what");
-                        String time =rs.getString("time");
-                        add_receive(what,time,send);
-                        int id=rs.getInt("id");
-                        change_n(send,id);
-                    }
-                  //  int mybook = rs.getInt("id");
-                    //onSuccess2(12, mybook);
-                }
-                cn.close();
-                st.close();
-                rs.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }).start();
-
-}
-public void change_n(String u,int id){
-    System.out.println("change");
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                String url = "jdbc:mysql://" + ip + "/" + db;
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection cn = DriverManager.getConnection(url, user, pwd);
-
-//                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-//                Calendar c = Calendar.getInstance();
-//                c.add(Calendar.DAY_OF_MONTH, 1);
-                //      sf.format(c.getTime())
-
-                String sql = " UPDATE chat SET "+u+" = 'y' WHERE id = "+id;
-                Statement st = (Statement) cn.createStatement();
-                ResultSet rs = st.executeQuery(sql);
-                while(rs.next())
-                {
-                    int mybook = rs.getInt("id");
-                    //onSuccess2(12, mybook);
-                }
-                cn.close();
-                st.close();
-                rs.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }).start();
-}
-public void add_send(String what,String time)
+    private void insert_text (final String ip, final String db, final String user, final String pwd, final String users,String time,String what,String send)
     {
-
-//        MyMessage message = new MyMessage("1+1", IMessage.MessageType.SEND_TEXT);
-//        message.setUserInfo(new DefaultUser("1", users, users));
-//        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-//        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-//        mAdapter.addToStart(message, true);
-
-
-        MyMessage message2 = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
-        System.out.println(what);
-        message2.setUserInfo(new DefaultUser("1", users, users));
-        message2.setTimeString(time);
-        mAdapter.addToStart(message2, true);
-
-    }
-
-    public void add_receive(String what,String time,String SEND )
-    {
-        List<MyMessage> list = new ArrayList<>();
-        MyMessage message2;
-        message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
-        message2.setUserInfo(new DefaultUser("1", SEND, SEND));
-        message2.setTimeString(time);
-        list.add(message2);
-    }
-
-    private void data_to(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String url = "jdbc:mysql://" + ip + "/" + db;
-
+                    String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
-
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
-                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
-                    //      sf.format(c.getTime())
-                    String sql = "select * from chat where  date = "+sf.format(c.getTime());
+                    String date=sf.format(c.getTime());
+                    String sql = " insert into chat(date,time,what,send,ob,"+users+") values('"+date+"','"+time+"','"+what+"','"+send+"'"+",1,'y')";
                     Statement st = (Statement) cn.createStatement();
-                    ResultSet rs = st.executeQuery(sql);
-                    while(rs.next())
-                    {
-                        String send =rs.getString("send");
-                        String what =rs.getString("what");
-                        String time =rs.getString("time");
-                        int id=rs.getInt("id");
-                        read_judge_send(send,what,time,id,users);
-                        
+                    int Res = st.executeUpdate(sql);
+                    if (Res>0) {
+                        onSuccess3String(200,send,what,time);
+                        cn.close();
+                        st.close();
+                       // onSuccess2(200, 1);
+                    } else {
+                       // onSuccess2(20, 0);
+                        System.out.println("false_________________________");
+                        cn.close();
+                        st.close();
+                        insert_text(ip, db, user, pwd,users,time,what,users);
+                        System.out.println("return______________________");
                     }
                     cn.close();
                     st.close();
-                    rs.close();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (SQLException e) {
@@ -642,91 +537,261 @@ public void add_send(String what,String time)
                 }
             }
         }).start();
+
     }
 
-private void insert_text (final String ip, final String db, final String user, final String pwd, final String users,String time,String what,String send)
-{
-    new Thread(new Runnable() {
+    public void read_judge_send(String send,String what,String time,int id,String users, List<MyMessage> list){
+        if(send.equals(users))
+        {
+            System.out.println(what);
+            MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
+            message.setUserInfo(new DefaultUser("1", users, users));
+            message.setTimeString(time) ;
+            list.add(message);
+        }else {
+            MyMessage message2;
+            message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
+            message2.setUserInfo(new DefaultUser("1", send, send));
+            message2.setTimeString(time);
+            list.add(message2);
+        }
+    }
+    public void onSuccess3(int i, int json,String js) {
+        // Log.i("Channel", "onSuccess");
+        Message message = Message.obtain();
+        message.what = i;
+        Bundle bundle = new Bundle();
+        bundle.putInt("json", json);
+        bundle.putString("js", js);
+        message.setData(bundle);
+        myHandler.sendMessage(message);
+    }
+public void delay_s(){
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
         @Override
         public void run() {
-            try {
-                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                Class.forName("com.mysql.jdbc.Driver");
-                Connection cn = DriverManager.getConnection(url, user, pwd);
-                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                Calendar c = Calendar.getInstance();
-                String date=sf.format(c.getTime());
-                String sql = " insert into chat(date,time,what,send,ob) values('"+date+"','"+time+"','"+what+"','"+send+"'"+",1)";
-                Statement st = (Statement) cn.createStatement();
-                int Res = st.executeUpdate(sql);
-                if (Res>0) {
-                    onSuccess2(20, 1);
-                } else {
-                    onSuccess2(20, 0);
-                }
-                cn.close();
-                st.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            onSuccess(1,"","");
         }
-    }).start();
-
+    }, 1000);
 }
-
-public void read_judge_send(String send,String what,String time,int id,String users){
-
-    if(send.equals(users))
-    {
-        System.out.println("equal");
-
-       // add_send(what,time);
-
-        MyMessage  message = new MyMessage("233", IMessage.MessageType.SEND_TEXT);
-        message.setUserInfo(new DefaultUser("1", users, users));
-        message.setTimeString(time) ;
-
-       // onSuccessmessage(66,message,mAdapter);
-       // mAdapter.addToStart(message, true);
-      //  System.out.println("4");
-
-       // change_n(users,id);
-    }else {
-
-        add_receive(what,time,send);
-
-        change_n(send,id);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Ppp=false;
+        System.out.println("执行 onDestroy()");
     }
-}
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        myHandler.removeCallbacksAndMessages(null);
+        System.out.println("按下了back键   onBackPressed()");
+    }
 
     private Handler myHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case 66:
-                    Bundle bundle66 = msg.getData();
-                    MyMessage message66= (MyMessage) bundle66.getSerializable("message");
-                    MsgListAdapter<MyMessage> mAdapter = (MsgListAdapter<MyMessage>) bundle66.getSerializable("mAdapter");
-                    mAdapter.addToStart(message66, true);
+                case 200:
+                    Bundle bundle200 = msg.getData();
+                    String send200 = bundle200.getString("send");
+                    String what200 =bundle200.getString("what");
+                    String time200 =bundle200.getString("time");
+                    MyMessage message200 = new MyMessage(what200, IMessage.MessageType.SEND_TEXT);
+                    message200.setUserInfo(new DefaultUser("1", send200, send200));
+                    message200.setTimeString(time200);
+                    mAdapter.addToStart(message200, true);
                     break;
+                case 0:     //change_n
+                    Bundle bundle0 = msg.getData();
+                    int id = bundle0.getInt("json");
+                    System.out.println(id);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
 
-                case 2:
-                    data_yes();
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
+                                //      sf.format(c.getTime())
+                                String sql = "update chat set "+users+" = 'y' where id = "+id;
+                                Statement st = (Statement) cn.createStatement();
+                                int Res = st.executeUpdate(sql);
+//                                if (Res>0) {
+//                                    onSuccess2(20, 1);
+//                                } else {
+//                                    onSuccess2(20, 0);
+//                                }
+                               // System.out.println(sql);
+                                cn.close();
+                                st.close();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    break;
+                case 3://       read_judge_send
+                    Bundle bundle3 = msg.getData();
+                    String send = bundle3.getString("send");
+                    String what =bundle3.getString("what");
+                    String time =bundle3.getString("time");
+                    // System.out.println(users);
+                    if(send.equals(users))
+                    {
+                        System.out.println(send+what);
+                        MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
+                        message.setUserInfo(new DefaultUser("1", users, users));
+                        message.setTimeString(time) ;
+                        mAdapter.addToStart(message, true);
+                    }else {
+                        System.out.println(send+what);
+                        MyMessage message2;
+                        message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
+                        message2.setUserInfo(new DefaultUser("1", send, send));
+                        message2.setTimeString(time);
+                        mAdapter.addToStart(message2, true);
+                    }
+                    break;
+                case 2: //延时
+                    if(Ppp)
+                    {
+                        delay_s();
+                    }
                     break;
                 case 1:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
 
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
+                                //      sf.format(c.getTime())
+                                String sql = "select * from chat where  "+users+" = 'n'";
+                                System.out.println(sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                    int id=rs.getInt("id");
+                                 //   read_judge_send2(send,what,time,id,users);
+                                    onSuccess3String(3,send,what,time);
+                                    onSuccess2(0,id);//change_n
+                                    //调用  结果如上
+                                }
+                                //  onSuccess3(76,1,users);
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                onSuccess2(2,2);
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                     break;
 
-                case 0:
-                    Bundle bundle = msg.getData();
-                    String data = bundle.getString("json");
-                    System.out.println(data);
-                    String data2 =bundle.getString("js");
-                    System.out.println(data2);
-                    //System.out.println(bundle.getString("json", ""));
+
+                case 78: //今天
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
+                                //      sf.format(c.getTime())
+                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
+                                System.out.println(sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                    int id=rs.getInt("id");
+                                    read_judge_send(send,what,time,id,users,list);
+                                }
+                                 // onSuccess3(1,1,users);
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                onSuccess2(1,2);
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+                    break;
+                case 77://昨天
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                c.add(Calendar.DAY_OF_MONTH, -1);//
+                                SimpleDateFormat sf2 = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c2 = Calendar.getInstance();
+                                //      sf.format(c.getTime())
+                                String sql = "select * from chat where  date ="+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
+                              //  String sql = "select * from chat where  date in ("+sf.format(c.getTime())+","+sf2.format(c2.getTime())+") and "+users+" = 'y'"+" order by id desc ";
+                                System.out.println(sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    System.out.println(send);
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                    int id=rs.getInt("id");
+                                    read_judge_send(send,what,time,id,users,list);
+                                }
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                onSuccess3(78,1,users);//今天
+                              //  onSuccess2(1,2);//循环
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
                     break;
                 case 20:
                     Bundle bundle20 = msg.getData();
@@ -736,6 +801,7 @@ public void read_judge_send(String send,String what,String time,int id,String us
                     else
                         Toast.makeText(MessageListActivity.this, "霍达提示您添加失败", Toast.LENGTH_SHORT).show();
                     break;
+
                 default:break;
             }
         }

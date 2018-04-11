@@ -55,8 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                 et_pwd.setVisibility(View.VISIBLE);
                 bt_login.setVisibility(View.VISIBLE);
             }
-        }, 1100);
-
+        }, 2601);
     }
 
 
@@ -70,16 +69,16 @@ public class LoginActivity extends AppCompatActivity {
     private void initAnims() {
         //初始化底部注册、登录的按钮动画
         //以控件自身所在的位置为原点，从下方距离原点200像素的位置移动到原点
-        ObjectAnimator tranLogin = ObjectAnimator.ofFloat(et_name, "translationY", 500, 0);
-        ObjectAnimator tranRegister = ObjectAnimator.ofFloat(et_pwd, "translationY", 500, 0);
-        ObjectAnimator tranbt = ObjectAnimator.ofFloat(bt_login, "translationY", 500, 0);
+        ObjectAnimator tranLogin = ObjectAnimator.ofFloat(et_name, "translationY", 400, 0);
+        ObjectAnimator tranRegister = ObjectAnimator.ofFloat(et_pwd, "translationY", 400, 0);
+        ObjectAnimator tranbt = ObjectAnimator.ofFloat(bt_login, "translationY", 400, 0);
         //将注册、登录的控件alpha属性从0变到1
         ObjectAnimator alphaLogin = ObjectAnimator.ofFloat(et_name, "alpha", 0, 1);
         ObjectAnimator alphaRegister = ObjectAnimator.ofFloat(et_pwd, "alpha", 0, 1);
         ObjectAnimator alphabt = ObjectAnimator.ofFloat(bt_login, "alpha", 0, 1);
 
         final AnimatorSet bottomAnim = new AnimatorSet();
-        bottomAnim.setDuration(1000);
+        bottomAnim.setDuration(2100);
         //同时执行控件平移和alpha渐变动画
         bottomAnim.play(tranLogin).with(tranRegister).with(tranbt).with(alphaLogin).with(alphaRegister).with(alphabt);
 
@@ -104,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         ObjectAnimator scaleYLogo = ObjectAnimator.ofFloat(ivLogo, "scaleY", 1f, 0.75f);
 
         AnimatorSet logoAnim = new AnimatorSet();
-        logoAnim.setDuration(1000);
+        logoAnim.setDuration(2000);
         logoAnim.play(tranLogo).with(scaleXLogo).with(scaleYLogo);
         logoAnim.start();
         logoAnim.addListener(new AnimatorListenerAdapter() {

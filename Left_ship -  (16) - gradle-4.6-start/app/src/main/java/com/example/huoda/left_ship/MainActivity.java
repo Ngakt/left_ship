@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity
             }
         }, 30);
         onSuccess(102,"");
+//        77是加载聊天记录，现在已经转回到分界面进行加载
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1577,14 +1578,11 @@ public class MainActivity extends AppCompatActivity
             message2.setUserInfo(new DefaultUser("1", send, send));
             message2.setTimeString(time);
             list.add(message2);
-           // add_receive(what,time,send);
-
 
            // onSuccess3(76,id,send);
         }
 
     }
-
 
     Handler mHandler = new Handler() {
 
@@ -1592,47 +1590,39 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 77:
-
+                case 78: //今天
                     new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
-
-                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                                Calendar c = Calendar.getInstance();
-                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
-                                //      sf.format(c.getTime())
-                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
-                                System.out.println(sql);
-                                Statement st = (Statement) cn.createStatement();
-                                ResultSet rs = st.executeQuery(sql);
-                                while(rs.next())
-                                {
-                                    String send =rs.getString("send");
-                                    String what =rs.getString("what");
-                                    String time =rs.getString("time");
-                                    int id=rs.getInt("id");
-                                    read_judge_send(send,what,time,id,users,list);
-
-                                }
-                              //  onSuccess3(76,1,users);
-                                cn.close();
-                                st.close();
-                                rs.close();
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
+                    @Override
+                    public void run() {
+                        try {
+                            String url = "jdbc:mysql://" + ip + "/" + db+"?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8";
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection cn = DriverManager.getConnection(url, user, pwd);
+                            String sql = "alter table chat add column "+users+" varchar(4) default 'n'";
+                            System.out.println(sql);
+                            Statement st = (Statement) cn.createStatement();
+                            ResultSet rs = st.executeQuery(sql);
+                            int Res = st.executeUpdate(sql);
+                            if (Res>0) {
+                                onSuccess2(22,1);
                             }
+                            else {
+                                onSuccess2(22,0);
+                            }
+                            cn.close();
+                            st.close();
+                            rs.close();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    }).start();
+                    }
+                }).start();
+                    break;
 
-
-
+                case 77://昨天
+                  //  onSuccess3(78,1,users);
                     break;
                 case 76 :
                     Bundle bundle76 = msg.getData();
@@ -1856,19 +1846,6 @@ public class MainActivity extends AppCompatActivity
 //                        }
 //                    }, 50);
                      vis();
-//                    change_add.setVisibility(View.GONE);
-//                    change_con.setVisibility(View.GONE);
-//                    change_wel.setVisibility(View.GONE);
-//                    change_del.setVisibility(View.GONE);
-//                    change_edit.setVisibility(View.GONE);
-//                    change_look.setVisibility(View.GONE);
-//                    change_send.setVisibility(View.GONE);
-//                    change_share.setVisibility(View.GONE);
-//                    change_help.setVisibility(View.GONE);
-//                    change_date_day.setVisibility(View.GONE);
-//                    bo_yes.setVisibility(View.GONE);
-//                    bo_to.setVisibility(View.GONE);
-//                    bo_tom.setVisibility(View.GONE);
 
                     break;
                 case 104:
@@ -2039,6 +2016,14 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, "霍达提示您连接成功", Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(MainActivity.this, "霍达提示您连接失败", Toast.LENGTH_SHORT).show();
+                    break;
+                case 22:
+                    Bundle bundle22 = msg.getData();
+                    int data22 = bundle22.getInt("json");
+                    if (data22==1)
+                        Toast.makeText(MainActivity.this, "霍达提示您添加用户成功", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MainActivity.this, "霍达提示您添加用户失败", Toast.LENGTH_SHORT).show();
                     break;
                 case 21:
                     Bundle bundle21 = msg.getData();
