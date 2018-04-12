@@ -518,10 +518,10 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                     Statement st = (Statement) cn.createStatement();
                     int Res = st.executeUpdate(sql);
                     if (Res>0) {
-                        onSuccess3String(200,send,what,time);
+                       // onSuccess3String(200,send,what,time);
                         cn.close();
                         st.close();
-                       // onSuccess2(200, 1);
+
                     } else {
                        // onSuccess2(20, 0);
 
@@ -544,7 +544,7 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 
     }
 
-    public void read_judge_send(String send,String what,String time,int id,String users, List<MyMessage> list){
+    public void read_judge_send(String send,String what,String time,String users, List<MyMessage> list){
         if(send.equals(users))
         {
            Log.i(TAG, "自己发的：   " + send);
@@ -597,7 +597,66 @@ public void delay_s(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case 200:
+                case 8:
+                    mData=list;
+                    initMsgAdapter();
+                    onSuccess2(1,1);
+                    break;
+                case 77://昨天 + 今天
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                c.add(Calendar.DAY_OF_MONTH, -1);//
+                                SimpleDateFormat sf2 = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c2 = Calendar.getInstance();
+                                //      sf.format(c.getTime())
+                                //  String sql = "select * from chat where  date ="+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
+                                String sql = "select send,what,time,id from chat where  date in ("+sf.format(c.getTime())+","+sf2.format(c2.getTime())+") and "+users+" = 'y'"+" order by id desc ";
+                                Log.i(TAG, "77:  " + sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+                                rs.next();
+                                String send2 =rs.getString("send");
+                                String what2 =rs.getString("what");
+                                String time2 =rs.getString("time");
+                                id=rs.getInt("id");
+                                read_judge_send(send2,what2,time2,users,list);
+
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                     int id4=rs.getInt("id");
+                                    read_judge_send(send,what,time,users,list);
+                                }
+
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                // onSuccess3(78,1,users);//今天
+                                onSuccess2(7,2);//循环
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    break;
+//                case 4:
+//                    Bundle bundle4 = msg.getData();
+//                    int id4 = bundle4.getInt("json");
+//                    id=id4;
+//                    break;
+                case 200:   // 传入参数，添加一条消息记录
                     Bundle bundle200 = msg.getData();
                     String send200 = bundle200.getString("send");
                     String what200 =bundle200.getString("what");
@@ -607,10 +666,8 @@ public void delay_s(){
                     message200.setTimeString(time200);
                     mAdapter.addToStart(message200, true);
                     break;
-                case 0:     //change_n
-                    Bundle bundle0 = msg.getData();
-                    int id = bundle0.getInt("json");
-                   Log.i(TAG, "chang_n:  id_" + id);
+                case 1:  //循环
+                    System.out.println(id);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -623,7 +680,54 @@ public void delay_s(){
                                 Calendar c = Calendar.getInstance();
                                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
                                 //      sf.format(c.getTime())
-                                String sql = "update chat set "+users+" = 'y' where id = "+id;
+//                                String sql = "select send,what,time,id from chat where  "+users+" = 'n'";
+                                String sql = "select send,what,time,id from chat where  id > "+id;
+                                Log.i(TAG, "循环语句：  " + sql);
+                                Statement st = (Statement) cn.createStatement();
+                                ResultSet rs = st.executeQuery(sql);
+
+                                while(rs.next())
+                                {
+                                    String send =rs.getString("send");
+                                    String what =rs.getString("what");
+                                    String time =rs.getString("time");
+                                    int id4 =rs.getInt("id");
+                                    //   read_judge_send2(send,what,time,id,users);
+                                    id=id4;
+                                    onSuccess3String(3,send,what,time);
+                                    onSuccess2(0,id4);//change_n
+                                    //调用  结果如上
+                                }
+                                //  onSuccess3(76,1,users);
+                                cn.close();
+                                st.close();
+                                rs.close();
+                                onSuccess2(2,2);
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    break;
+                case 0:     //change_n
+                    Bundle bundle0 = msg.getData();
+                    int id5 = bundle0.getInt("json");
+                   Log.i(TAG, "chang_n:  id_" + id5);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
+                                Class.forName("com.mysql.jdbc.Driver");
+                                Connection cn = DriverManager.getConnection(url, user, pwd);
+
+                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                                Calendar c = Calendar.getInstance();
+                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
+                                //      sf.format(c.getTime())
+                                String sql = "update chat set "+users+" = 'y' where id = "+id5;
                                 Statement st = (Statement) cn.createStatement();
                                 int Res = st.executeUpdate(sql);
 //                                if (Res>0) {
@@ -631,7 +735,6 @@ public void delay_s(){
 //                                } else {
 //                                    onSuccess2(20, 0);
 //                                }
-
                                 cn.close();
                                 st.close();
                             } catch (ClassNotFoundException e) {
@@ -670,94 +773,12 @@ public void delay_s(){
                         delay_s();
                     }
                     break;
-                case 1:  //循环
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
 
-                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                                Calendar c = Calendar.getInstance();
-                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
-                                //      sf.format(c.getTime())
-                                String sql = "select send,what,time,id from chat where  "+users+" = 'n'";
-                                Log.i(TAG, "循环语句：  " + sql);
-                                Statement st = (Statement) cn.createStatement();
-                                ResultSet rs = st.executeQuery(sql);
-
-                                while(rs.next())
-                                {
-                                    String send =rs.getString("send");
-                                    String what =rs.getString("what");
-                                    String time =rs.getString("time");
-                                    int id=rs.getInt("id");
-                                 //   read_judge_send2(send,what,time,id,users);
-                                    onSuccess3String(3,send,what,time);
-                                    onSuccess2(0,id);//change_n
-                                    //调用  结果如上
-                                }
-                                //  onSuccess3(76,1,users);
-                                cn.close();
-                                st.close();
-                                rs.close();
-                                onSuccess2(2,2);
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    break;
                 case 7: mData=list;
                     initMsgAdapter();
                     onSuccess2(1,1);
                     break;
-                case 77://昨天 + 今天
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
 
-                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                                Calendar c = Calendar.getInstance();
-                                c.add(Calendar.DAY_OF_MONTH, -1);//
-                                SimpleDateFormat sf2 = new SimpleDateFormat("yyyyMMdd");
-                                Calendar c2 = Calendar.getInstance();
-                                //      sf.format(c.getTime())
-                              //  String sql = "select * from chat where  date ="+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
-                                String sql = "select send,what,time,id,"+users+" from chat where  date in ("+sf.format(c.getTime())+","+sf2.format(c2.getTime())+") and "+users+" = 'y'"+" order by id desc ";
-                                 Log.i(TAG, "77:  " + sql);
-                                Statement st = (Statement) cn.createStatement();
-                                ResultSet rs = st.executeQuery(sql);
-                                while(rs.next())
-                                {
-                                    String send =rs.getString("send");
-                                    String what =rs.getString("what");
-                                    String time =rs.getString("time");
-                                    int id=rs.getInt("id");
-                                    read_judge_send(send,what,time,id,users,list);
-                                }
-                                cn.close();
-                                st.close();
-                                rs.close();
-                               // onSuccess3(78,1,users);//今天
-                                onSuccess2(7,2);//循环
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-
-                    break;
                 case 20:
                     Bundle bundle20 = msg.getData();
                     int data20 = bundle20.getInt("json");
