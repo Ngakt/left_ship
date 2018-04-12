@@ -75,6 +75,10 @@ public class LoginActivity extends AppCompatActivity {
         bt_login= (Button)findViewById(R.id.bt_login);
         String user1=sharedPreferences.getString("user1", "user1");
         String pwd1=sharedPreferences.getString("pwd1", "user1");
+
+//        System.out.println(sharedPreferences.getString("user1", "222222"));
+//        System.out.println(sharedPreferences.getString("pwd1", "333333"));
+
         et_name.setText(user1);
         et_pwd.setText(pwd1);
     }
@@ -144,7 +148,6 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     public void Tomain(View view){
-        initViews();
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         String user1 =  et_name.getText().toString().trim();
         MainActivity.users=user1;
@@ -155,9 +158,20 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user1", user1);
             editor.putString("pwd1", pwd1);
-            editor.commit();
+//            editor.commit();
+            editor.apply();
             startActivity(intent);
-            finish();
+//            System.out.println(sharedPreferences.getString("user1", "222222"));
+//            System.out.println(sharedPreferences.getString("pwd1", "333333"));
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    finish();
+                }
+            }, 200);
+
         } else {
            // et_name.setText("");
            // et_pwd.setText("");
