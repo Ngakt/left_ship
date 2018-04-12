@@ -1,5 +1,5 @@
 package imui.jiguang.cn.imuisample.messages;
-
+//长期保持非聊天界面 可以减少流量消耗？
 
 import android.Manifest;
 import android.app.Activity;
@@ -519,17 +519,14 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                     int Res = st.executeUpdate(sql);
                     if (Res>0) {
                        // onSuccess3String(200,send,what,time);
+                      //  onSuccess2(1,1);//立即调用——————有问题——会显示两边
                         cn.close();
                         st.close();
-
                     } else {
-                       // onSuccess2(20, 0);
-
                         Log.i(TAG, "插入：  " + "false_________________________");
                         cn.close();
                         st.close();
                         insert_text(ip, db, user, pwd,users,time,what,users);
-
                         Log.i(TAG, "插入：  " + "return______________________");
                     }
                     cn.close();
@@ -578,7 +575,7 @@ public void delay_s(){
         public void run() {
             onSuccess(1,"","");
         }
-    }, 1000);
+    }, 100);
 }
     @Override
     protected void onDestroy() {
@@ -637,7 +634,6 @@ public void delay_s(){
                                      int id4=rs.getInt("id");
                                     read_judge_send(send,what,time,users,list);
                                 }
-
                                 cn.close();
                                 st.close();
                                 rs.close();
@@ -667,7 +663,7 @@ public void delay_s(){
                     mAdapter.addToStart(message200, true);
                     break;
                 case 1:  //循环
-                    System.out.println(id);
+                   Log.i(TAG, "当前的消息id" + id);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {

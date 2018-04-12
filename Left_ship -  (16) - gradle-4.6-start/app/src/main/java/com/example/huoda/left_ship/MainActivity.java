@@ -84,13 +84,8 @@ import imui.jiguang.cn.imuisample.models.MyMessage;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = MainActivity.class.getSimpleName();
-    private final int REQUEST_CODE_CAMERA = 101;
-    private final int REQUEST_CODE_AUDIO = 102;
-    private final int REQUEST_CODE_LOCATE = 103;
+    private final String TAG ="主界面";
 
-    public List<MyMessage> mData,mData2;
-    public  List<MyMessage> list = new ArrayList<>();
 
     private AppBarLayout appBarLayout;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
@@ -111,7 +106,6 @@ public class MainActivity extends AppCompatActivity
              "android.permissionREQUEST_RECORD_VOICE_PERMISSION",
              "android.permissionREQUEST_CAMERA_PERMISSION",
              "android.permissionREQUEST_PHOTO_PERMISSION"};
-    public Handler nHandler;
     public TextView rot;
     protected static String  users="user1",ip="pcohd.uicp.cn:24967",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
@@ -130,26 +124,6 @@ public class MainActivity extends AppCompatActivity
         fdv();
         vis();
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onSuccess(71,"");
-            }
-        }, 2000);
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onSuccess(72,"");
-            }
-        }, 3000);
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onSuccess(73,"");
-            }
-        }, 4000);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -165,14 +139,14 @@ public class MainActivity extends AppCompatActivity
         }, 30);
         onSuccess(102,"");
 //        77是加载聊天记录，现在已经转回到分界面进行加载
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onSuccess(77,"");
-            }
-        }, 100);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onSuccess(77,"");
+//            }
+//        }, 100);
 
-        //verifyStoragePermissions(MainActivity.this);
+        verifyStoragePermissions(MainActivity.this);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -1460,129 +1434,9 @@ public class MainActivity extends AppCompatActivity
     private void qqUI()
     {
         //startActivity(new Intent(MainActivity.this, MessageListActivity.class));
-        mData=list;
-
         onSuccess(70,"");
     }
 
-
-    public void requestAudioPermisson() {
-
-        PermissionUtil.requestPerssions(this, REQUEST_CODE_AUDIO, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        PermissionUtil.getAudioPermissions(this, REQUEST_CODE_AUDIO);
-    }
-
-    public void requestLocatePermisson() {
-        PermissionUtil.requestPerssions(this, REQUEST_CODE_LOCATE, Manifest.permission.ACCESS_COARSE_LOCATION);
-        PermissionUtil.getLocationPermissions(this,REQUEST_CODE_LOCATE);}
-
-    public void requestCameraPermisson() {
-        //manifest.xml清单中需配置<uses-permission android:name="android.permission.CAMERA" />
-        //manifest.xml清单中需配置<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-        //manifest.xml清单中需配置<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        PermissionUtil.requestPerssions(this, REQUEST_CODE_CAMERA, Manifest.permission.CAMERA, Manifest.permission.READ_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-
-
-        // PermissionUtil.requestPerssions(this, REQUEST_CODE_CAMERA, Manifest.permission.CAMERA, Manifest.permission.READ_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-        PermissionUtil.getCameraPermissions(this, REQUEST_CODE_CAMERA);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-
-    public void onPermissionsGranted(int requestCode, List<String> perms, boolean isAllGranted) {
-        Log.e(TAG,"同意:" + perms.size() + "个权限,isAllGranted=" + isAllGranted);
-        for (String perm : perms) {
-            Log.e(TAG,"同意:" + perm);
-        }
-    }
-
-
-    public void onPermissionsDenied(int requestCode, List<String> perms, boolean isAllDenied) {
-        Log.e(TAG,"拒绝:" + perms.size() + "个权限,isAllDenied=" + isAllDenied);
-        for (String perm : perms) {
-            Log.e(TAG,"拒绝:" + perm);
-        }
-    }
-
-    public void goPermissionsSettings(View view) {
-        PermissionUtil.startApplicationDetailsSettings(this, 123);
-    }
-
-    public void isReadSMSPermissionDenied(View view) {
-        //manifest.xml清单中需配置<uses-permission android:name="android.permission.READ_SMS" />
-        boolean isForbidden  = PermissionUtil.deniedRequestPermissonsAgain(this, Manifest.permission.READ_SMS);
-        Log.e(TAG,"读取短信权限是否禁止询问=" + isForbidden);
-    }
-
-    public void readSMS(View view) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<HashMap<String, String>> hashMaps = readAllSMS();
-                for (HashMap<String, String> hashMap : hashMaps) {
-                    Log.e(TAG,hashMap.get("addr") + "," + hashMap.get("person") + "," + hashMap.get("body"));
-                }
-            }
-        }).run();
-    }
-
-    private Uri SMS_INBOX = Uri.parse("content://sms/");
-
-    private ArrayList<HashMap<String, String>> readAllSMS() {
-        Cursor cursor = managedQuery(SMS_INBOX, new String[]{"address", "person", "body"},
-                null, null, null);
-        ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-        if (cursor.moveToFirst()) {
-            int addrIdx = cursor.getColumnIndex("address");
-            int personIdx = cursor.getColumnIndex("person");
-            int bodyIdx = cursor.getColumnIndex("body");
-            do {
-                String addr = cursor.getString(addrIdx);
-                String person = cursor.getString(personIdx);
-                String body = cursor.getString(bodyIdx);
-
-                HashMap<String, String> item = new HashMap<String, String>();
-                item.put("addr", addr);
-                item.put("person", person);
-                item.put("body", body);
-                list.add(item);
-            } while (cursor.moveToNext());
-        }
-        return list;
-    }
-    public void read_judge_send(String send,String what,String time,int id,String users, List<MyMessage> list){
-
-        if(send.equals(users))
-        {
-           System.out.println(what);
-            MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
-            message.setUserInfo(new DefaultUser("1", users, users));
-            message.setTimeString(time) ;
-            list.add(message);
-
-            // onSuccessmessage(66,message,mAdapter);
-            // mAdapter.addToStart(message, true);
-            //  System.out.println("4");
-
-           // onSuccess3(76,id,send);
-
-        }else {
-            MyMessage message2;
-            message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
-            message2.setUserInfo(new DefaultUser("1", send, send));
-            message2.setTimeString(time);
-            list.add(message2);
-
-           // onSuccess3(76,id,send);
-        }
-
-    }
 
     Handler mHandler = new Handler() {
 
@@ -1590,91 +1444,13 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 78: //今天
-                    new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String url = "jdbc:mysql://" + ip + "/" + db+"?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8";
-                            Class.forName("com.mysql.jdbc.Driver");
-                            Connection cn = DriverManager.getConnection(url, user, pwd);
-                            String sql = "alter table chat add column "+users+" varchar(4) default 'n'";
-                            System.out.println(sql);
-                            Statement st = (Statement) cn.createStatement();
-                            ResultSet rs = st.executeQuery(sql);
-                            int Res = st.executeUpdate(sql);
-                            if (Res>0) {
-                                onSuccess2(22,1);
-                            }
-                            else {
-                                onSuccess2(22,0);
-                            }
-                            cn.close();
-                            st.close();
-                            rs.close();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-                    break;
 
-                case 77://昨天
-                  //  onSuccess3(78,1,users);
-                    break;
-                case 76 :
-                    Bundle bundle76 = msg.getData();
-                    String send = bundle76.getString("js");
-                    int id =  bundle76.getInt("json");
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
-                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                                 Calendar c = Calendar.getInstance();
-//                          c.add(Calendar.DAY_OF_MONTH, 1);
-                                //      sf.format(c.getTime())
-
-                                String sql = " UPDATE chat SET "+send+" = 'y' where  date = "+sf.format(c.getTime());
-                               // String sql = " UPDATE chat SET "+send+" = 'n' where "+send+" = 'y'";
-                                System.out.println(sql);
-                                Statement st = (Statement) cn.createStatement();
-                                int Res = st.executeUpdate(sql);
-                                if (Res>0) {
-                                    onSuccess2(20, 1);
-                                } else {
-                                    onSuccess2(20, 0);
-                                }
-                                cn.close();
-                                st.close();
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                    break;
-                case 71:
-                    requestCameraPermisson();
-                    break;
-                case 72:
-                    requestAudioPermisson();
-                    break;
-                case 73:
-                    requestLocatePermisson();
-                    break;
                 case 70:
                    // Intent intent =new Intent(MainActivity.this,MessageListActivity.class);
 
                     Intent intent = new Intent(MainActivity.this, MessageListActivity.class);
 //用Bundle携带数据
-                    MessageListActivity.mData = mData;
+                   // MessageListActivity.mData = mData;
                     MessageListActivity.ip = ip;
                     MessageListActivity.db = db;
                     MessageListActivity.user = user;
@@ -1838,15 +1614,7 @@ public class MainActivity extends AppCompatActivity
                 case 118:
                     break;
                 case 105:
-                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            vis();
-//                        }
-//                    }, 50);
                      vis();
-
                     break;
                 case 104:
                     ifExpanded();
