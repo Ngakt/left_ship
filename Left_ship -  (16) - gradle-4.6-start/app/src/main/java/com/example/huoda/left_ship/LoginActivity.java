@@ -6,8 +6,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -19,6 +21,9 @@ import android.widget.Toast;
 
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "Login界面";
+    private SharedPreferences sharedPreferences;
 
     private long exitTime;
     private EditText et_name;
@@ -41,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // 注意：此处将setContentView()方法注释掉
        // setContentView(R.layout.activity_start);
+
+    //    sp = getSharedPreferences("User", Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences("userInfo",Context. MODE_PRIVATE);
+
         setContentView(R.layout.activity_login);
         initViews();
         initAnims();
@@ -64,6 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         et_pwd = (EditText) findViewById(R.id.et_pwd);
         ivLogo = (ImageView) findViewById(R.id.iv_logo);
         bt_login= (Button)findViewById(R.id.bt_login);
+        String user1=sharedPreferences.getString("user1", "user1");
+        String pwd1=sharedPreferences.getString("pwd1", "user1");
+        et_name.setText(user1);
+        et_pwd.setText(pwd1);
     }
 
     private void initAnims() {
@@ -138,14 +151,18 @@ public class LoginActivity extends AppCompatActivity {
         String pwd1 =  et_pwd.getText().toString().trim();
         if (user1.equals(pwd1)) {
            // startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("user1", user1);
+            editor.putString("pwd1", pwd1);
+            editor.commit();
             startActivity(intent);
             finish();
         } else {
-            et_name.setText("");
-            et_pwd.setText("");
+           // et_name.setText("");
+           // et_pwd.setText("");
             Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
         }
-
     }
 
    /* @Override
