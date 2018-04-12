@@ -56,8 +56,9 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 
 public class MessageListActivity extends Activity implements ChatView.OnKeyboardChangedListener,
         ChatView.OnSizeChangedListener, View.OnTouchListener {
-
+    private static final String TAG = "群聊";
     public static String  users,ip,db,user,pwd;
+    public static int id;
     public static List<MyMessage> mData;
     public  List<MyMessage> list = new ArrayList<>();
     private boolean Ppp =true;
@@ -90,14 +91,15 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 
        // mData = getMessages();
         onSuccess(77,"","");
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mData=list;
-                initMsgAdapter();
-            }
-        }, 5000);
+
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mData=list;
+//                initMsgAdapter();
+//            }
+//        }, 5000);
 
 
         mChatView.setKeyboardChangedListener(this);
@@ -522,11 +524,13 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                        // onSuccess2(200, 1);
                     } else {
                        // onSuccess2(20, 0);
-                        System.out.println("false_________________________");
+
+                        Log.i(TAG, "插入：  " + "false_________________________");
                         cn.close();
                         st.close();
                         insert_text(ip, db, user, pwd,users,time,what,users);
-                        System.out.println("return______________________");
+
+                        Log.i(TAG, "插入：  " + "return______________________");
                     }
                     cn.close();
                     st.close();
@@ -543,12 +547,13 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
     public void read_judge_send(String send,String what,String time,int id,String users, List<MyMessage> list){
         if(send.equals(users))
         {
-            System.out.println(what);
+           Log.i(TAG, "自己发的：   " + send);
             MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
             message.setUserInfo(new DefaultUser("1", users, users));
             message.setTimeString(time) ;
             list.add(message);
         }else {
+            Log.i(TAG, "别人发的：   " + send);
             MyMessage message2;
             message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
             message2.setUserInfo(new DefaultUser("1", send, send));
@@ -579,13 +584,13 @@ public void delay_s(){
     protected void onDestroy() {
         super.onDestroy();
         Ppp=false;
-        System.out.println("执行 onDestroy()");
+        Log.i(TAG, "执行关闭    " +"destroy" );
     }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         myHandler.removeCallbacksAndMessages(null);
-        System.out.println("按下了back键   onBackPressed()");
+       Log.i(TAG, "返回键    " + "按下");
     }
 
     private Handler myHandler = new Handler(){
@@ -605,7 +610,7 @@ public void delay_s(){
                 case 0:     //change_n
                     Bundle bundle0 = msg.getData();
                     int id = bundle0.getInt("json");
-                    System.out.println(id);
+                   Log.i(TAG, "chang_n:  id_" + id);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -626,7 +631,7 @@ public void delay_s(){
 //                                } else {
 //                                    onSuccess2(20, 0);
 //                                }
-                               // System.out.println(sql);
+
                                 cn.close();
                                 st.close();
                             } catch (ClassNotFoundException e) {
@@ -645,13 +650,13 @@ public void delay_s(){
                     // System.out.println(users);
                     if(send.equals(users))
                     {
-                        System.out.println(send+what);
+                        Log.i(TAG, "自己：    " +what );
                         MyMessage  message = new MyMessage(what, IMessage.MessageType.SEND_TEXT);
                         message.setUserInfo(new DefaultUser("1", users, users));
                         message.setTimeString(time) ;
                         mAdapter.addToStart(message, true);
                     }else {
-                        System.out.println(send+what);
+                       Log.i(TAG, "别人：    " +what );
                         MyMessage message2;
                         message2 = new MyMessage(what, IMessage.MessageType.RECEIVE_TEXT);
                         message2.setUserInfo(new DefaultUser("1", send, send));
@@ -665,7 +670,7 @@ public void delay_s(){
                         delay_s();
                     }
                     break;
-                case 1:
+                case 1:  //循环
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -678,8 +683,8 @@ public void delay_s(){
                                 Calendar c = Calendar.getInstance();
                                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
                                 //      sf.format(c.getTime())
-                                String sql = "select * from chat where  "+users+" = 'n'";
-                                System.out.println(sql);
+                                String sql = "select send,what,time,id from chat where  "+users+" = 'n'";
+                                Log.i(TAG, "循环语句：  " + sql);
                                 Statement st = (Statement) cn.createStatement();
                                 ResultSet rs = st.executeQuery(sql);
 
@@ -707,50 +712,11 @@ public void delay_s(){
                         }
                     }).start();
                     break;
-
-
-                case 78: //今天
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
-                                Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
-
-                                SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-                                Calendar c = Calendar.getInstance();
-                                //   c.add(Calendar.DAY_OF_MONTH, -1);//
-                                //      sf.format(c.getTime())
-                                String sql = "select * from chat where  date = "+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
-                                System.out.println(sql);
-                                Statement st = (Statement) cn.createStatement();
-                                ResultSet rs = st.executeQuery(sql);
-                                while(rs.next())
-                                {
-                                    String send =rs.getString("send");
-                                    String what =rs.getString("what");
-                                    String time =rs.getString("time");
-                                    int id=rs.getInt("id");
-                                    read_judge_send(send,what,time,id,users,list);
-                                }
-                                 // onSuccess3(1,1,users);
-                                cn.close();
-                                st.close();
-                                rs.close();
-                                onSuccess2(1,2);
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-
+                case 7: mData=list;
+                    initMsgAdapter();
+                    onSuccess2(1,1);
                     break;
-                case 77://昨天
-
+                case 77://昨天 + 今天
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -765,15 +731,14 @@ public void delay_s(){
                                 SimpleDateFormat sf2 = new SimpleDateFormat("yyyyMMdd");
                                 Calendar c2 = Calendar.getInstance();
                                 //      sf.format(c.getTime())
-                                String sql = "select * from chat where  date ="+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
-                              //  String sql = "select * from chat where  date in ("+sf.format(c.getTime())+","+sf2.format(c2.getTime())+") and "+users+" = 'y'"+" order by id desc ";
-                                System.out.println(sql);
+                              //  String sql = "select * from chat where  date ="+sf.format(c.getTime())+" and "+users+" = 'y'"+" order by id desc ";
+                                String sql = "select send,what,time,id,"+users+" from chat where  date in ("+sf.format(c.getTime())+","+sf2.format(c2.getTime())+") and "+users+" = 'y'"+" order by id desc ";
+                                 Log.i(TAG, "77:  " + sql);
                                 Statement st = (Statement) cn.createStatement();
                                 ResultSet rs = st.executeQuery(sql);
                                 while(rs.next())
                                 {
                                     String send =rs.getString("send");
-                                    System.out.println(send);
                                     String what =rs.getString("what");
                                     String time =rs.getString("time");
                                     int id=rs.getInt("id");
@@ -782,8 +747,8 @@ public void delay_s(){
                                 cn.close();
                                 st.close();
                                 rs.close();
-                                onSuccess3(78,1,users);//今天
-                              //  onSuccess2(1,2);//循环
+                               // onSuccess3(78,1,users);//今天
+                                onSuccess2(7,2);//循环
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();
                             } catch (SQLException e) {
