@@ -142,6 +142,11 @@ public class MainActivity extends AppCompatActivity
 
         verifyStoragePermissions(MainActivity.this);
 
+        sharedPreferences = this.getSharedPreferences("userInfo",Context. MODE_PRIVATE);
+        System.out.println(sharedPreferences.getString("user1", "222222"));
+        System.out.println(sharedPreferences.getString("pwd1", "333333"));
+        users=sharedPreferences.getString("user1", "user1");
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
