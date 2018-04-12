@@ -141,6 +141,8 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
+            et_name.setText("");
+            et_pwd.setText("");
             Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
         }
 
