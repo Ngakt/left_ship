@@ -575,7 +575,7 @@ public void delay_s(){
         public void run() {
             onSuccess(1,"","");
         }
-    }, 100);
+    }, 1000);
 }
     @Override
     protected void onDestroy() {

@@ -139,13 +139,6 @@ public class MainActivity extends AppCompatActivity
             }
         }, 30);
         onSuccess(102,"");
-//        77是加载聊天记录，现在已经转回到分界面进行加载
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                onSuccess(77,"");
-//            }
-//        }, 100);
 
         verifyStoragePermissions(MainActivity.this);
 
@@ -284,7 +277,7 @@ public class MainActivity extends AppCompatActivity
         tv_day_list =(TextView)findViewById(R.id.tv_day_list);
         tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
         lv = (ListView) findViewById(R.id.lv);
-         rot=(TextView)findViewById(R.id.rot);
+
     }
     public void vis(){
         change_add.setVisibility(View.GONE);
