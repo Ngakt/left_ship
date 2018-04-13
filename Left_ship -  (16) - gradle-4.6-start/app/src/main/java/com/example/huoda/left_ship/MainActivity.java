@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isExpanded = false;
 
     private TextView tv,tv_count,tv_date_yes,tv_date_to,tv_date_tom,tv_date_tom_add,tv_date_day;
+    private ImageView iv_photo;
     public TextView tv_day_id,tv_day_id2,tv_day_list,tv_day_pre;
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
@@ -143,9 +144,11 @@ public class MainActivity extends AppCompatActivity
         verifyStoragePermissions(MainActivity.this);
 
         sharedPreferences = this.getSharedPreferences("userInfo",Context. MODE_PRIVATE);
-        System.out.println(sharedPreferences.getString("user1", "222222"));
-        System.out.println(sharedPreferences.getString("pwd1", "333333"));
+//        System.out.println(sharedPreferences.getString("user1", "222222"));
+//        System.out.println(sharedPreferences.getString("pwd1", "333333"));
         users=sharedPreferences.getString("user1", "user1");
+
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity
             appBarLayout.setExpanded(isExpanded, true);
         });
     }
+
     public void SetGone(){
         change_add.setVisibility(View.GONE);
         change_con.setVisibility(View.GONE);
@@ -282,6 +286,8 @@ public class MainActivity extends AppCompatActivity
         tv_day_list =(TextView)findViewById(R.id.tv_day_list);
         tv_day_pre =(TextView)findViewById(R.id.tv_day_pre);
         lv = (ListView) findViewById(R.id.lv);
+
+        iv_photo=findViewById(R.id.iv_photo);
 
     }
     public void vis(){

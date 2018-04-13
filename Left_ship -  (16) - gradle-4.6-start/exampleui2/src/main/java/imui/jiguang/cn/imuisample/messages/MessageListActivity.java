@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,8 +77,15 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
     private InputMethodManager mImm;
     private Window mWindow;
 
+public DatabaseConnection cnn = new DatabaseConnection();
+
+
+//    private static String url = "jdbc:mysql://" + ip + "/" + db+"?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8";
+//public Connection cn_1= DriverManager.getConnection(url, user, pwd);;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.chat_activity);
@@ -100,6 +108,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 //                initMsgAdapter();
 //            }
 //        }, 5000);
+    onSuccess2(9,9);
+
 
 
         mChatView.setKeyboardChangedListener(this);
@@ -510,7 +520,10 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                 try {
                     String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                     Class.forName("com.mysql.jdbc.Driver");
-                    Connection cn = DriverManager.getConnection(url, user, pwd);
+                  //  Connection cn = DriverManager.getConnection(url, user, pwd);
+                   // Connection cn=getConnection2();
+                    Connection cn =cnn.getConnection();
+
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     String date=sf.format(c.getTime());
@@ -529,7 +542,8 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
                         insert_text(ip, db, user, pwd,users,time,what,users);
                         Log.i(TAG, "插入：  " + "return______________________");
                     }
-                    cn.close();
+                    cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
+//                    cn.close();
                     st.close();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -575,7 +589,7 @@ public void delay_s(){
         public void run() {
             onSuccess(1,"","");
         }
-    }, 1000);
+    }, 800);
 }
     @Override
     protected void onDestroy() {
@@ -590,6 +604,8 @@ public void delay_s(){
        Log.i(TAG, "返回键    " + "按下");
     }
 
+
+
     private Handler myHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -600,13 +616,17 @@ public void delay_s(){
                     onSuccess2(1,1);
                     break;
                 case 77://昨天 + 今天
+                    Log.i(TAG, "77" );
+
                     new Thread(new Runnable() {
+
                         @Override
                         public void run() {
                             try {
                                 String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                                 Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
+                              //  Connection cn = DriverManager.getConnection(url, user, pwd);
+                                Connection cn =cnn.getConnection();
 
                                 SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                                 Calendar c = Calendar.getInstance();
@@ -628,13 +648,17 @@ public void delay_s(){
 
                                 while(rs.next())
                                 {
+
                                     String send =rs.getString("send");
+
                                     String what =rs.getString("what");
+                                    Log.i(TAG, send2 + what);
                                     String time =rs.getString("time");
                                      int id4=rs.getInt("id");
                                     read_judge_send(send,what,time,users,list);
                                 }
-                                cn.close();
+                                cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
+                              //  cn.close();
                                 st.close();
                                 rs.close();
                                 // onSuccess3(78,1,users);//今天
@@ -670,8 +694,10 @@ public void delay_s(){
                             try {
                                 String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                                 Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
 
+//                                Connection cn = DriverManager.getConnection(url, user, pwd);
+                                Connection cn =cnn.getConnection();
+                               // Connection cn = getConnection();
                                 SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                                 Calendar c = Calendar.getInstance();
                                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
@@ -695,7 +721,8 @@ public void delay_s(){
                                     //调用  结果如上
                                 }
                                 //  onSuccess3(76,1,users);
-                                cn.close();
+//                                cn.close();
+                                cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
                                 st.close();
                                 rs.close();
                                 onSuccess2(2,2);
@@ -784,9 +811,12 @@ public void delay_s(){
                         Toast.makeText(MessageListActivity.this, "霍达提示您添加失败", Toast.LENGTH_SHORT).show();
                     break;
 
-                default:break;
+                default:
+                    break;
             }
         }
     };
 
 }
+
+

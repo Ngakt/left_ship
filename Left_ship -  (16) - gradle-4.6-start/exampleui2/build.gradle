@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    
 
     provided files ('src/mysql-connector-java-5.1.30-bin.jar')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
