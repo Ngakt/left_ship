@@ -158,7 +158,9 @@ public DatabaseConnection cnn = new DatabaseConnection();
 
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMediaFilePath(item.getFilePath());
-                    message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+
+//                    message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+                    message.setUserInfo(new DefaultUser("1", users, users));
 
                     final MyMessage fMsg = message;
                     MessageListActivity.this.runOnUiThread(new Runnable() {
@@ -248,8 +250,8 @@ public DatabaseConnection cnn = new DatabaseConnection();
                 final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE);
                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                 message.setMediaFilePath(photoPath);
-                message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
-
+//                message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+                message.setUserInfo(new DefaultUser("1", users, users));
                 //记录到数据库
                 //或者发送到服务器——获得返回信息——url——记录url再发一遍，去掉这个图片发送；
 

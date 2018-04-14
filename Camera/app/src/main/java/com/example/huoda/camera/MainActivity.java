@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        
         mText1 = (TextView) findViewById(R.id.myText2);
         //"文件路径：\n"+
         mText1.setText(uploadFile);
