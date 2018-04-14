@@ -21,11 +21,25 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.INTERNET,
             Manifest.permission.CAMERA};
     // 声明一个集合，在后面的代码中用来存储用户拒绝授权的权
     List<String> mPermissionList = new ArrayList<>();
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
     private ImageView imageView;
+    public String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +92,23 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(imageUri);
                 //这里得到图片后做相应操作
 
-               String path = UriToPathUtil.getImageAbsolutePath(this,imageUri);
+                path = UriToPathUtil.getImageAbsolutePath(this,imageUri);
                System.out.println(path);
                // Bitmap bitmap2 = data.getParcelableExtra(path);
                 Bitmap bitmap2 = BitmapFactory.decodeFile(path);
                 System.out.println(bitmap2);
                 this.imageView.setImageBitmap(bitmap2);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String url = "http://pcohd.oicp.io:33667/WebServer/servlet/UploadShipServlet";
+                        System.out.println(path);
+                        String response =UploadUtil.uploadFile(new File(path),url);
+                        System.out.println(response);
+                    }
+                }).start();
+
 
                 break;
             case ImageUtils.REQUEST_CODE_FROM_CAMERA:
@@ -105,31 +132,4 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-    /*
-    * 剪切图片
-    */
-    private void crop(Uri uri) {
-        // 裁剪图片意图
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // 裁剪框的比例，1：1
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // 裁剪后输出图片的尺寸大小
-        intent.putExtra("outputX", 200);
-        intent.putExtra("outputY", 200);
-
-        intent.putExtra("outputFormat", "PNG");// 图片格式
-        intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);
-        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
-        startActivityForResult(intent, PHOTO_REQUEST_CUT);
-    }
-
-
-
-
-
 }
