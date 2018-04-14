@@ -80,9 +80,6 @@ public class MessageListActivity extends Activity implements ChatView.OnKeyboard
 public DatabaseConnection cnn = new DatabaseConnection();
 
 
-//    private static String url = "jdbc:mysql://" + ip + "/" + db+"?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&mysqlEncoding=utf8";
-//public Connection cn_1= DriverManager.getConnection(url, user, pwd);;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -97,20 +94,9 @@ public DatabaseConnection cnn = new DatabaseConnection();
         mChatView.initModule();
         mChatView.setTitle("技术咨询");
 
-       // mData = getMessages();
         onSuccess(77,"","");
 
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mData=list;
-//                initMsgAdapter();
-//            }
-//        }, 5000);
     onSuccess2(9,9);
-
-
 
         mChatView.setKeyboardChangedListener(this);
         mChatView.setOnSizeChangedListener(this);
@@ -228,7 +214,7 @@ public DatabaseConnection cnn = new DatabaseConnection();
             @Override
             public void onFinishRecord(File voiceFile, int duration) {
                 MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE);
-                message.setUserInfo(new DefaultUser("1", "Ironman", "ironman"));
+                message.setUserInfo(new DefaultUser("1", users, users));
                 message.setMediaFilePath(voiceFile.getPath());
                 message.setDuration(duration);
                 message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -529,17 +515,19 @@ public DatabaseConnection cnn = new DatabaseConnection();
                     SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                     Calendar c = Calendar.getInstance();
                     String date=sf.format(c.getTime());
-                    String sql = " insert into chat(date,time,what,send,ob,"+users+") values('"+date+"','"+time+"','"+what+"','"+send+"'"+",1,'y')";
+                    String sql = " insert into chat(date,time,what,send,ob,"+users+") values('"+date+"','"+time+"','"+what+"','"+send+"'"+",1,'n')";
                     Statement st = (Statement) cn.createStatement();
                     int Res = st.executeUpdate(sql);
                     if (Res>0) {
                        // onSuccess3String(200,send,what,time);
                       //  onSuccess2(1,1);//立即调用——————有问题——会显示两边
-                        cn.close();
+                        cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
+                        //cn.close();
                         st.close();
                     } else {
                         Log.i(TAG, "插入：  " + "false_________________________");
-                        cn.close();
+//                        cn.close();
+                        cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
                         st.close();
                         insert_text(ip, db, user, pwd,users,time,what,users);
                         Log.i(TAG, "插入：  " + "return______________________");
@@ -557,7 +545,7 @@ public DatabaseConnection cnn = new DatabaseConnection();
 
     }
 
-    public void read_judge_send(String send,String what,String time,String users, List<MyMessage> list){
+    public void read_judge_send(String send,String what,String time){
         if(send.equals(users))
         {
            Log.i(TAG, "自己发的：   " + send);
@@ -591,7 +579,7 @@ public void delay_s(){
         public void run() {
             onSuccess(1,"","");
         }
-    }, 800);
+    }, 1000);
 }
     @Override
     protected void onDestroy() {
@@ -619,7 +607,7 @@ public void delay_s(){
                     break;
                 case 77://昨天 + 今天
                     Log.i(TAG, "77" );
-
+//                    onSuccess2(7,2);//循环
                     new Thread(new Runnable() {
 
                         @Override
@@ -641,12 +629,13 @@ public void delay_s(){
                                 Log.i(TAG, "77:  " + sql);
                                 Statement st = (Statement) cn.createStatement();
                                 ResultSet rs = st.executeQuery(sql);
-                                rs.next();
-                                String send2 =rs.getString("send");
-                                String what2 =rs.getString("what");
-                                String time2 =rs.getString("time");
-                                id=rs.getInt("id");
-                                read_judge_send(send2,what2,time2,users,list);
+
+//                                rs.next();
+//                                String send2 =rs.getString("send");
+//                                String what2 =rs.getString("what");
+//                                String time2 =rs.getString("time");
+//                                id=rs.getInt("id");
+//                                read_judge_send(send2,what2,time2,users,list);
 
                                 while(rs.next())
                                 {
@@ -654,10 +643,10 @@ public void delay_s(){
                                     String send =rs.getString("send");
 
                                     String what =rs.getString("what");
-                                    Log.i(TAG, send2 + what);
+                                  // Log.i(TAG, send2 + what);
                                     String time =rs.getString("time");
-                                     int id4=rs.getInt("id");
-                                    read_judge_send(send,what,time,users,list);
+                                   //  int id4=rs.getInt("id");
+                                    read_judge_send(send,what,time);
                                 }
                                 cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
                               //  cn.close();
@@ -666,8 +655,10 @@ public void delay_s(){
                                 // onSuccess3(78,1,users);//今天
                                 onSuccess2(7,2);//循环
                             } catch (ClassNotFoundException e) {
+//                                onSuccess2(7,2);//循环
                                 e.printStackTrace();
                             } catch (SQLException e) {
+//                                onSuccess2(7,2);//循环
                                 e.printStackTrace();
                             }
                         }
@@ -704,8 +695,8 @@ public void delay_s(){
                                 Calendar c = Calendar.getInstance();
                                 //   c.add(Calendar.DAY_OF_MONTH, -1);//
                                 //      sf.format(c.getTime())
-//                                String sql = "select send,what,time,id from chat where  "+users+" = 'n'";
-                                String sql = "select send,what,time,id from chat where  id > "+id;
+                                String sql = "select send,what,time,id from chat where  "+users+" = 'n'";
+                               // String sql = "select send,what,time,id from chat where  id > "+id;
                                 Log.i(TAG, "循环语句：  " + sql);
                                 Statement st = (Statement) cn.createStatement();
                                 ResultSet rs = st.executeQuery(sql);
@@ -746,7 +737,8 @@ public void delay_s(){
                             try {
                                 String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                                 Class.forName("com.mysql.jdbc.Driver");
-                                Connection cn = DriverManager.getConnection(url, user, pwd);
+//                                Connection cn = DriverManager.getConnection(url, user, pwd);
+                                Connection cn =cnn.getConnection();
 
                                 SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
                                 Calendar c = Calendar.getInstance();
@@ -760,7 +752,8 @@ public void delay_s(){
 //                                } else {
 //                                    onSuccess2(20, 0);
 //                                }
-                                cn.close();
+//                                cn.close();
+                                cnn.releaseConnection((com.mysql.jdbc.Connection) cn);
                                 st.close();
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();

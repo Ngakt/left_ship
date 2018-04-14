@@ -24,7 +24,7 @@ public class DatabaseConnection {
     final static String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME
             + "?useUnicode=true&characterEncoding=utf-8";
     private static final DatabaseConnection instance = new DatabaseConnection();
-    private final int INIT_COUNT = 9;
+    private final int INIT_COUNT = 5;
     private final int MAX_COUNT = 30;
     private int count = 0;
 

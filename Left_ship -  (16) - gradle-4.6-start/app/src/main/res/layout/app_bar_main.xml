@@ -131,7 +131,7 @@
     <include
         android:id="@+id/change_del"
         layout="@layout/del"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <include
         android:id="@+id/change_share"
@@ -156,7 +156,7 @@
     <include
         android:id="@+id/change_add"
         layout="@layout/add"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <include
         android:id="@+id/change_look"

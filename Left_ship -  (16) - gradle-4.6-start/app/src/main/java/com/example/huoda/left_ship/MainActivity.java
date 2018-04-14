@@ -3,6 +3,7 @@ package com.example.huoda.left_ship;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +58,8 @@ import com.example.huoda.left_ship.image.SmartImageView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -87,8 +92,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG ="主界面";
-    private SharedPreferences sharedPreferences;
-
+    public String path, response;
+    public ImageView imageView;
+    public EditText et_url;
+    private SharedPreferences sharedPreferences,add_save;
+public ProgressBar load_1;
 
     private AppBarLayout appBarLayout;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", /*Locale.getDefault()*/Locale.CHINESE);
@@ -101,8 +109,20 @@ public class MainActivity extends AppCompatActivity
     private ListView lv,lv_name;
     public View change_add,change_con,change_del,change_wel,change_edit,change_look,change_send,change_share,change_help,change_date_day;
     public View bo_yes,bo_to,bo_tom;
-    public View change_add1,content;
+    public View content;
+    public Button bt_add_save,bt_add_restore;
     private TextView mTextMessage;
+   public String[] permissions = new String[]{
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.INTERNET,
+//           Manifest.permission.READ_CONTACTS,  //我们不需要联系人
+           Manifest.permission.MODIFY_AUDIO_SETTINGS,
+           Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA};
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
@@ -110,7 +130,6 @@ public class MainActivity extends AppCompatActivity
              "android.permissionREQUEST_RECORD_VOICE_PERMISSION",
              "android.permissionREQUEST_CAMERA_PERMISSION",
              "android.permissionREQUEST_PHOTO_PERMISSION"};
-    public TextView rot;
     protected static String  users="user1",ip="pcohd.uicp.cn:24967",db0,db="librarydb",db2,user="test",pwd="";
     public int count;
     private BottomNavigationBar bottomNavigationBar;
@@ -140,15 +159,20 @@ public class MainActivity extends AppCompatActivity
             }
         }, 30);
         onSuccess(102,"");
+       // Toast.makeText(this,"为了您的体验请开启相应权限", Toast.LENGTH_SHORT).show();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ActivityCompat.requestPermissions(MainActivity.this, permissions,
+                        1);
+            }
+        }, 900);
 
-        verifyStoragePermissions(MainActivity.this);
+        //verifyStoragePermissions(MainActivity.this);
 
         sharedPreferences = this.getSharedPreferences("userInfo",Context. MODE_PRIVATE);
-//        System.out.println(sharedPreferences.getString("user1", "222222"));
-//        System.out.println(sharedPreferences.getString("pwd1", "333333"));
+        add_save = this.getSharedPreferences("saveadd",Context. MODE_PRIVATE);
         users=sharedPreferences.getString("user1", "user1");
-
-
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -236,7 +260,107 @@ public class MainActivity extends AppCompatActivity
             appBarLayout.setExpanded(isExpanded, true);
         });
     }
+    public void onClick_add_camera(View view) {
+        ImageUtils.showImagePickDialog(this);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        path=null;
+        switch (requestCode) {
+            case ImageUtils.REQUEST_CODE_FROM_ALBUM:
+                if(resultCode == RESULT_CANCELED) {
+                    return;
+                }
 
+                Uri imageUri = data.getData();
+                //这里得到图片后做相应操作
+                path = UriToPathUtil.getImageAbsolutePath(this,imageUri);
+                // Bitmap bitmap2 = data.getParcelableExtra(path);
+                Bitmap bitmap2 = BitmapFactory.decodeFile(path);
+                Bitmap A=compressBySize(path);
+              //  Bitmap A=compressImage(bitmap2);
+                System.out.println(bitmap2);
+                this.imageView.setImageBitmap(bitmap2);
+                onSuccess2(88,8);
+                break;
+            case ImageUtils.REQUEST_CODE_FROM_CAMERA:
+                if(resultCode == RESULT_CANCELED) {
+                    ImageUtils.deleteImageUri(this, ImageUtils.imageUriFromCamera);
+                } else {
+                    Uri imageUriCamera = ImageUtils.imageUriFromCamera;
+                    //这里得到图片后做相应操作
+                    path = UriToPathUtil.getImageAbsolutePath(this,imageUriCamera);
+                    Bitmap B=compressBySize(path);
+
+//                    ContentValues values = new ContentValues();
+//                    values.put(MediaStore.Images.Media.TITLE, name);
+//                    values.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpeg");
+//                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(path);
+
+                    this.imageView.setImageBitmap(B);
+                    onSuccess2(88,9);
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+    public static Bitmap compressBySize(String pathName) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;// 不去真的解析图片，只是获取图片的头部信息，包含宽高等；
+        Bitmap bitmap = BitmapFactory.decodeFile(pathName, opts);
+        // 得到图片的宽度、高度；
+        float imgWidth = opts.outWidth;
+        float imgHeight = opts.outHeight;
+        // 分别计算图片宽度、高度与目标宽度、高度的比例；取大于等于该比例的最小整数；
+        int widthRatio = (int) Math.ceil(imgWidth / (float) 300);
+        int heightRatio = (int) Math.ceil(imgHeight / (float) 300);
+        opts.inSampleSize = 1;
+        if (widthRatio > 1 || widthRatio > 1) {
+            if (widthRatio > heightRatio) {
+                opts.inSampleSize = widthRatio;
+            } else {
+                opts.inSampleSize = heightRatio;
+            }
+        }
+        //设置好缩放比例后，加载图片进内容；
+        opts.inJustDecodeBounds = false;
+        bitmap = BitmapFactory.decodeFile(pathName, opts);
+        return bitmap;
+    }
+    public static void saveFile(Bitmap bm, String fileName) throws Exception {
+//        File dirFile = new File(fileName);
+//        //检测图片是否存在
+//        if (dirFile.exists()) {
+//            dirFile.delete();  //删除原图片
+//        }
+        File myCaptureFile = new File(fileName);
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        //100表示不进行压缩，70表示压缩率为30%
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        bos.flush();
+        bos.close();
+    }
+//    public static Bitmap compressImage(Bitmap image) {
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+//        int options = 100;
+//        while (baos.toByteArray().length / 1024 > 500) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+//            baos.reset();//重置baos即清空baos
+//            //第一个参数 ：图片格式 ，第二个参数： 图片质量，100为最高，0为最差  ，第三个参数：保存压缩后的数据的流
+//            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+//            options -= 10;//每次都减少10
+//        }
+//        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+//        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+//        return bitmap;
+//    }
     public void SetGone(){
         change_add.setVisibility(View.GONE);
         change_con.setVisibility(View.GONE);
@@ -288,7 +412,11 @@ public class MainActivity extends AppCompatActivity
         lv = (ListView) findViewById(R.id.lv);
 
         iv_photo=findViewById(R.id.iv_photo);
-
+        bt_add_save=findViewById(R.id.bt_add_save);
+        bt_add_restore= findViewById(R.id.bt_add_restore);
+        imageView=findViewById(R.id.imageView);
+        et_url=findViewById(R.id.et_url);
+        load_1=findViewById(R.id.load_1);
     }
     public void vis(){
         change_add.setVisibility(View.GONE);
@@ -304,6 +432,8 @@ public class MainActivity extends AppCompatActivity
         bo_yes.setVisibility(View.GONE);
         bo_to.setVisibility(View.VISIBLE);
         bo_tom.setVisibility(View.GONE);
+
+        load_1.setVisibility(View.GONE);
 
     }
     public void ifExpanded(){
@@ -1084,17 +1214,6 @@ public class MainActivity extends AppCompatActivity
                     share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
                     MainActivity.this.startActivity(share_intent);
 
-                   /* Intent share_intent = new Intent();
-                    share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-                   // share_intent.setType("text/plain");//设置分享内容的类型
-                    share_intent.setType("image/*");  //设置分享内容的类型
-                    share_intent.putExtra(Intent.EXTRA_SUBJECT, "总想祭天");//添加分享内容标题
-                    share_intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("http://20vv455999.iask.in:22467/WebServer/image/share.png"));
-                    //share_intent.putExtra(Intent.EXTRA_TEXT, "我觉得公园植物管理系统非常好用");//添加分享内容
-                    share_intent = Intent.createChooser(share_intent, "分享公园植物管理系统");
-                    MainActivity.this.startActivity(share_intent);*/
-
-                    // WeiXinShareUtil.sharePhotoToWX(MainActivity.this,"不想说话，你们开心就好",android.os.Environment.MEDIA_MOUNTED);
 
                 }
             });
@@ -1225,65 +1344,7 @@ public class MainActivity extends AppCompatActivity
             return false;
         }
     };
-    public void savePicture(Bitmap bm, String fileName) {
-        Log.i("xing", "savePicture: ------------------------");
-        if (null == bm) {
-            Log.i("xing", "savePicture: ------------------图片为空------");
-            return;
-        }
-        // File foder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/test");
-        //DCIM/camera
-        File foder = new File("/DCIM/camera");
-        if (!foder.exists()) {
-            foder.mkdirs();
-        }
-        File myCaptureFile = new File(foder, fileName);
-        try {
-            if (!myCaptureFile.exists()) {
-                myCaptureFile.createNewFile();
-            }
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-            //压缩保存到本地
-            bm.compress(Bitmap.CompressFormat.PNG, 90, bos);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        Toast.makeText(this, "霍达提示您保存成功!", Toast.LENGTH_SHORT).show();
-    }
-    private Bitmap getImageFromAssetsFile(String fileName){
-        Bitmap image = null;
-        AssetManager am = getResources().getAssets();
-        try {
-            InputStream is=am.open(fileName);
-            image= BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();    }
-        return image;
-    }
-    private static Uri saveBitmap(Bitmap bm, String picName) {
-        try {
-            String dir=Environment.getExternalStorageDirectory().getAbsolutePath()+"/renji/"+picName+".jpg";
-            File f = new File(dir);
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                f.createNewFile();
-            }
-            FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-            Uri uri = Uri.fromFile(f);
-            return uri;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();    }
-        return null;
-    }
     private static String insertImageToSystem(Context context, String imagePath) {
         String url = "";
         try {
@@ -1388,6 +1449,70 @@ public class MainActivity extends AppCompatActivity
 
         return bmp;
     }
+    public void add_restore(View view){
+        String et1=add_save.getString("et1", "");
+        String et2=add_save.getString("et2", "");
+        String et3=add_save.getString("et3", "");
+        String et4=add_save.getString("et4", "");
+        String et5=add_save.getString("et5", "");
+
+        EditText et_1 = (EditText)findViewById(R.id.et_1);
+        et_1.setText(et1);
+        EditText et_2 = (EditText)findViewById(R.id.et_2);
+        et_2.setText(et2);
+        EditText et_3 = (EditText)findViewById(R.id.et_3);
+        et_3.setText(et3);
+        EditText et_4 = (EditText)findViewById(R.id.et_4);
+        et_4.setText(et4);
+        EditText et_5 = (EditText)findViewById(R.id.et_5);
+        et_5.setText(et5);
+    }
+    public void add_save(View view){
+        EditText et_1 = (EditText)findViewById(R.id.et_1);
+        String et1 = et_1.getText().toString().trim();
+        EditText et_2 = (EditText)findViewById(R.id.et_2);
+        String et2 = et_2.getText().toString().trim();
+        EditText et_3 = (EditText)findViewById(R.id.et_3);
+        String et3 = et_3.getText().toString().trim();
+        EditText et_4 = (EditText)findViewById(R.id.et_4);
+        String et4 = et_4.getText().toString().trim();
+        EditText et_5 = (EditText)findViewById(R.id.et_5);
+        String et5 = et_5.getText().toString().trim();
+        SharedPreferences.Editor editor = add_save.edit();
+        editor.putString("et1", et1);
+        editor.putString("et2", et2);
+        editor.putString("et3", et3);
+        editor.putString("et4", et4);
+        editor.putString("et5", et5);
+        editor.commit();
+        if ((add_save.getString("et5", "").equals(et5))&&
+                (add_save.getString("et4", "").equals(et4))&&
+                (add_save.getString("et3", "").equals(et3))&&
+                (add_save.getString("et2", "").equals(et2))&&
+                (add_save.getString("et1", "").equals(et1)))
+        {
+//            onSuccess2(89,0);
+            Toast.makeText(this,"霍达提示您保存成功", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    public void add_clear(View view){
+        String et1="";
+        String et2="";
+        String et3="";
+        String et4="";
+        String et5="";
+        EditText et_1 = (EditText)findViewById(R.id.et_1);
+        et_1.setText(et1);
+        EditText et_2 = (EditText)findViewById(R.id.et_2);
+        et_2.setText(et2);
+        EditText et_3 = (EditText)findViewById(R.id.et_3);
+        et_3.setText(et3);
+        EditText et_4 = (EditText)findViewById(R.id.et_4);
+        et_4.setText(et4);
+        EditText et_5 = (EditText)findViewById(R.id.et_5);
+        et_5.setText(et5);
+    }
     public void addInfo(View view){
         EditText et_1 = (EditText)findViewById(R.id.et_1);
         String et1 = et_1.getText().toString().trim();
@@ -1397,18 +1522,35 @@ public class MainActivity extends AppCompatActivity
         String et3 = et_3.getText().toString().trim();
         EditText et_4 = (EditText)findViewById(R.id.et_4);
         String et4 = et_4.getText().toString().trim();
-        add(et1,et2,et3,et4);
+        EditText et_5 = (EditText)findViewById(R.id.et_5);
+        String et5 = et_5.getText().toString().trim();
+        SharedPreferences.Editor editor = add_save.edit();
+        editor.putString("et1", et1);
+        editor.putString("et2", et2);
+        editor.putString("et3", et3);
+        editor.putString("et4", et4);
+        editor.putString("et5", et5);
+        editor.commit();
+
+        add(et1,et2,et3,et4,et5);
         hintKbTwo();
     }
-    private void add(final String et1,final String et2,final String et3,final String et4) {
+    private void add(final String et1,final String et2,final String et3,final String et4,final String et5) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    String www=add_save.getString("et_url", "");
+                   // String www =et_url.getText().toString().trim();
                     String url = "jdbc:mysql://" + ip + "/" + db+"?useUnicode=true&characterEncoding=UTF-8";
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection cn = DriverManager.getConnection(url, user, pwd);
-                    String sql1 = "insert into plants (S_name)values('"+et1+et2+et3+et4+"')";
+                    SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+                    Calendar c2 = Calendar.getInstance();
+//                    sf.format(c2.getTime());
+                    String sql1 = "insert into plants (date,name,trunk,leaves,insect,others,url) values ('"+ sf.format(c2.getTime())+"','"+et1+"','"+et2+"','"+et3+"','"+et4+"','"+et5+"','"+www+"')";
+                    System.out.println(sql1);
                     Statement st1 = (Statement) cn.createStatement();
                     int Res1 = st1.executeUpdate(sql1);
                     //System.out.println(Res1 > 0 ? "插入数据成功" : "插入数据失败");
@@ -1416,7 +1558,6 @@ public class MainActivity extends AppCompatActivity
                     onSuccess2(21,1);
                     cn.close();
                     st1.close();
-
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                     onSuccess2(21,0);
@@ -1448,6 +1589,31 @@ public class MainActivity extends AppCompatActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case 90:
+                    load_1=findViewById(R.id.load_1);
+                    load_1.setVisibility(View.GONE);
+                    break;
+                case 88:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String url = "http://pcohd.oicp.io:33667/WebServer/servlet/UploadShipServlet";
+                            System.out.println(path);
+                            response =UploadUtil.uploadFile(new File(path),url);
+                            if(response!=null) {
+                               // et_url.setText(response);
+                                onSuccess2(90,9);
+                                SharedPreferences.Editor editor = add_save.edit();
+                                editor.putString("et_url", response);
+                                editor.apply();
+                                System.out.println(response);
+                            }
+
+                        }
+                    }).start();
+                    load_1=findViewById(R.id.load_1);
+                    load_1.setVisibility(View.VISIBLE);
+                    break;
 
                 case 70:
                    // Intent intent =new Intent(MainActivity.this,MessageListActivity.class);

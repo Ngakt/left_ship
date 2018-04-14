@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 et_pwd.setVisibility(View.VISIBLE);
                 bt_login.setVisibility(View.VISIBLE);
             }
-        }, 2601);
+        }, 2301);
     }
 
 
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         ObjectAnimator alphabt = ObjectAnimator.ofFloat(bt_login, "alpha", 0, 1);
 
         final AnimatorSet bottomAnim = new AnimatorSet();
-        bottomAnim.setDuration(2100);
+        bottomAnim.setDuration(1300);
         //同时执行控件平移和alpha渐变动画
         bottomAnim.play(tranLogin).with(tranRegister).with(tranbt).with(alphaLogin).with(alphaRegister).with(alphabt);
 
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         ObjectAnimator scaleYLogo = ObjectAnimator.ofFloat(ivLogo, "scaleY", 1f, 0.75f);
 
         AnimatorSet logoAnim = new AnimatorSet();
-        logoAnim.setDuration(2000);
+        logoAnim.setDuration(1500);
         logoAnim.play(tranLogo).with(scaleXLogo).with(scaleYLogo);
         logoAnim.start();
         logoAnim.addListener(new AnimatorListenerAdapter() {
@@ -161,8 +161,7 @@ public class LoginActivity extends AppCompatActivity {
 //            editor.commit();
             editor.apply();
             startActivity(intent);
-//            System.out.println(sharedPreferences.getString("user1", "222222"));
-//            System.out.println(sharedPreferences.getString("pwd1", "333333"));
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -178,10 +177,4 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
         }
     }
-
-   /* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-    }*/
 }
